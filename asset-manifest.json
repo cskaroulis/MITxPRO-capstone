@@ -1,16 +1,14 @@
 {
   "files": {
     "main.css": "/mitxpro-capstone/static/css/main.073c9b0a.css",
-    "main.js": "/mitxpro-capstone/static/js/main.8b9f916b.js",
-    "static/js/787.e9923917.chunk.js": "/mitxpro-capstone/static/js/787.e9923917.chunk.js",
+    "main.js": "/mitxpro-capstone/static/js/main.1bae7015.js",
     "static/media/logo.svg": "/mitxpro-capstone/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/mitxpro-capstone/index.html",
     "main.073c9b0a.css.map": "/mitxpro-capstone/static/css/main.073c9b0a.css.map",
-    "main.8b9f916b.js.map": "/mitxpro-capstone/static/js/main.8b9f916b.js.map",
-    "787.e9923917.chunk.js.map": "/mitxpro-capstone/static/js/787.e9923917.chunk.js.map"
+    "main.1bae7015.js.map": "/mitxpro-capstone/static/js/main.1bae7015.js.map"
   },
   "entrypoints": [
     "static/css/main.073c9b0a.css",
-    "static/js/main.8b9f916b.js"
+    "static/js/main.1bae7015.js"
   ]
 }

@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const firebase = require("firebase");
 
+console.log("env", process.env);
+
 firebase.initializeApp({
   appId: process.env.FIREBASE_APIID,
   apiKey: process.env.FIREBASE_APIKEY,

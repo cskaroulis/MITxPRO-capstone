@@ -1,10 +1,16 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const { firebaseConfig } = require("./secrets/firebase");
 const firebase = require("firebase");
 
-firebase.initializeApp(firebaseConfig);
+firebase.initializeApp({
+  appId: process.env.FIREBASE_APIID,
+  apiKey: process.env.FIREBASE_APIKEY,
+  authDomain: process.env.FIREBASE_AUTHDOMAIN,
+  messagingSenderId: process.env.FIREBASE_MESSAGINGSENDERID,
+  projectId: process.env.FIREBASE_PROJECTID,
+  storageBucket: process.env.FIREBASE_STORAGEBUCKET,
+});
 
 const app = express();
 

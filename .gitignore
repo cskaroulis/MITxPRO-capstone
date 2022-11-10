@@ -13,7 +13,4 @@
 
 # misc
 .DS_Store
-
-# secrets
-/app/secrets
-/api/secrets
+.notes

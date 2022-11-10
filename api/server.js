@@ -2,8 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const firebase = require("firebase");
-
-console.log("env", process.env);
+require("dotenv").config();
 
 firebase.initializeApp({
   appId: process.env.FIREBASE_APIID,
@@ -164,6 +163,5 @@ app.get(
 );
 */
 
-const port = process.env.PORT || 3000;
-app.listen(port);
-console.log(`Running on port: ${port}`);
+const port = process.env.PORT || 5000;
+app.listen(port, () => console.log(`Running on port: ${port}`));

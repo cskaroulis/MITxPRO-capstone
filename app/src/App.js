@@ -3,20 +3,13 @@ import logo from "./logo.svg";
 import "./App.css";
 
 function App() {
-  const initialStructure = {
+  const [auth, setAuth] = useState({
     isAuthenticated: false,
-    firstName: null,
-    lastName: null,
-    email: null,
-  };
-  const [user, setUser] = useState(initialStructure);
+  });
 
-  const updateUser = (data) => {
-    setUser({
-      isAuthenticated: true,
-      firstName: data?.firstName,
-      lastName: data?.firstName,
-      email: data?.email,
+  const updateAuth = (data) => {
+    setAuth({
+      isAuthenticated: data?.isAuthenticated,
     });
   };
 
@@ -24,12 +17,15 @@ function App() {
     () => {
       const endpoint = process.env.REACT_APP_API_ENDPOINT;
       console.info("requesting data from:", endpoint);
-      fetch(endpoint + "hello?email=x&password=y")
+      fetch(
+        endpoint +
+          "hello?email=fakename012@fakedomain.net&password=fakepassword"
+      )
         .then((res) => res.json())
         .then(
           (result) => {
-            console.info("data:", result[0]);
-            updateUser(result[0]);
+            console.info("data:", result);
+            updateAuth(result);
           },
           // Note: it's important to handle errors here
           // instead of a catch() block so that we don't swallow
@@ -48,8 +44,8 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>MITxPro capstone project: Online Banking WebApp.</p>
-        {user?.isAuthenticated ? (
-          <p>Hello {user?.firstName}</p>
+        {auth?.isAuthenticated ? (
+          <p>Hello there. You are logged in.</p>
         ) : (
           <p>Not logged in.</p>
         )}

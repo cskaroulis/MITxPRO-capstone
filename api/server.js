@@ -1,6 +1,10 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const { firebaseConfig } = require("./secrets/firebase");
+const firebase = require("firebase");
+
+firebase.initializeApp(firebaseConfig);
 
 const app = express();
 
@@ -14,22 +18,27 @@ app.use(bodyParser.json());
 app.get("/hello", function (req, res) {
   const email = req.query.email;
   const password = req.query.password;
-  let firstName = "";
-  let lastName = "";
 
-  if (email === "x" && password === "y") {
-    firstName = "Phil";
-    lastName = "Skaroulis";
+  if (email === "fakename012@fakedomain.net" && password === "fakepassword") {
+    const auth = firebase.auth();
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // Signed in
+        // const user = userCredential.user;
+        const user = { isAuthenticated: true };
+        console.log("user:", user);
+        res.send(user);
+      })
+      .catch((error) => {
+        console.error("auth:", error);
+        res.send({
+          isAuthenticated: false,
+          errorCode: error.code,
+          errorMessage: error.message,
+        });
+      });
   }
-
-  res.send([
-    {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      password: password,
-    },
-  ]);
 });
 
 /*

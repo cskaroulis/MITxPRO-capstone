@@ -4,6 +4,14 @@ const cors = require("cors");
 const firebase = require("firebase");
 require("dotenv").config();
 
+// import custom routers
+const authRoutePath = "./routes/auth/";
+const routers = {
+  signup: require(authRoutePath + "signup"),
+  login: require(authRoutePath + "login"),
+  logout: require(authRoutePath + "logout"),
+};
+
 firebase.initializeApp({
   appId: process.env.FIREBASE_APIID,
   apiKey: process.env.FIREBASE_APIKEY,
@@ -22,6 +30,12 @@ app.use(cors());
 // parse application/json
 app.use(bodyParser.json());
 
+// use custom routers as middlware
+app.use("/signup", routers.signup);
+app.use("/login", routers.login);
+app.use("/logout", routers.logout);
+
+/*
 app.get("/hello", function (req, res) {
   const email = req.query.email;
   const password = req.query.password;
@@ -47,34 +61,9 @@ app.get("/hello", function (req, res) {
       });
   }
 });
+*/
 
 /*
-app.post("/signup", function (req, res) {
-  res.send([
-    {
-      email: req.body.email,
-      password: req.body.password,
-    },
-  ]);
-});
-
-app.post("/login", function (req, res) {
-  res.send([
-    {
-      email: req.body.email,
-      password: req.body.password,
-    },
-  ]);
-});
-
-app.post("/logout", function (req, res) {
-  res.send([
-    {
-      email: req.body.email,
-      password: req.body.password,
-    },
-  ]);
-});
 
 // ACCOUNTS
 

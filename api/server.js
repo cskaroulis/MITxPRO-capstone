@@ -2,8 +2,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-// read .env (only in dev)
-require("dotenv").config();
+// read .env only in dev
+if (process?.env?.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 
 // import the sub-apps
 const routes = require("./sub-apps/routes");

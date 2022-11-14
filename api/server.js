@@ -10,6 +10,9 @@ if (process?.env?.NODE_ENV !== "production") {
 // import the sub-apps
 const routes = require("./sub-apps/routes");
 
+// import the middleware
+// const authenticateToken = require("./middleware/authToken.js");
+
 const app = express();
 
 // used to serve static files from public directory
@@ -19,8 +22,9 @@ app.use(cors());
 // parse application/json
 app.use(bodyParser.json());
 
-// routing middleware
+// custom middleware
 app.use(routes);
+// app.use(authenticateToken);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Running on port: ${port}`));

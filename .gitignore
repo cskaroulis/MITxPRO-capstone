@@ -16,4 +16,4 @@ api/.env
 
 # misc
 .DS_Store
-.notes
+.notes.txt

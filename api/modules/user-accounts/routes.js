@@ -1,15 +1,23 @@
 // User Account Routes
 
 const router = require("express").Router();
+
 const { isAuthenticated } = require("../datasources");
 const { create, getOne, update, discard } = require("./data-access-layer");
-const { createErrorResponse } = require("../helpers");
+const { createErrorResponse, generateAccessToken } = require("../helpers");
+const authenticateToken = require("../../middleware/authToken");
 
 router.post("/", function (req, res) {
   const { email, password, firstName, lastName, phoneNumber } = req.body;
+
+  //
+  // TODO: Does this user exist already? If so, redirect to login page
+  //
+
   create({ email, password, firstName, lastName, phoneNumber })
     .then((user) => {
-      res.status(201).send(user);
+      const token = generateAccessToken(email);
+      res.status(201).send({ user, token });
     })
     .catch((error) => {
       console.error(error);
@@ -19,7 +27,7 @@ router.post("/", function (req, res) {
     });
 });
 
-router.get("/", function (req, res) {
+router.get("/", authenticateToken, function (req, res) {
   const { userAccountId } = req.query;
   const auth = isAuthenticated();
   if (auth.user) {
@@ -38,7 +46,7 @@ router.get("/", function (req, res) {
   }
 });
 
-router.put("/", function (req, res) {
+router.put("/", authenticateToken, function (req, res) {
   const { userAccountId } = req.query;
   const { firstName, lastName, phoneNumber } = req.body;
   const auth = isAuthenticated();
@@ -58,7 +66,7 @@ router.put("/", function (req, res) {
   }
 });
 
-router.delete("/", function (req, res) {
+router.delete("/", authenticateToken, function (req, res) {
   const { userAccountId } = req.query;
   const auth = isAuthenticated();
   if (auth.user) {

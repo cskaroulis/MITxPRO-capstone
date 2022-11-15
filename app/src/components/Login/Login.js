@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
+import { AppContext } from "../../common/context";
 import "./Login.css";
 
 const loginUser = async (credentials) => {
-  return fetch("http://localhost:5000/sessions", {
+  const endpoint = process.env.REACT_APP_API_ENDPOINT;
+  return fetch(endpoint + "sessions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -15,14 +17,19 @@ const loginUser = async (credentials) => {
 export default function Login({ setToken }) {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const contextMgr = useContext(AppContext);
+  // const [context, setContext] = useContext(AppContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = await loginUser({
+    const response = await loginUser({
       email,
       password,
     });
-    setToken(token);
+    setToken(response?.token);
+    contextMgr.token = response?.token;
+    contextMgr.updateUser(response?.user?.userAccounts[0]);
+    console.log(">>> contextMgr.user:", contextMgr.user);
   };
 
   return (
@@ -40,6 +47,7 @@ export default function Login({ setToken }) {
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
+        <p>"congue.turpis.in@protonmail.net","HVN46JOU7TV"</p>
         <div>
           <button type="submit">Submit</button>
         </div>

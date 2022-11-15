@@ -1,20 +1,17 @@
 import React from "react";
-import useToken from "./useToken";
+import useToken from "../../common/useToken";
 
-import Home from "../Home/Home";
-import Login from "../Auth/Login";
+import BankingAccounts from "../BankingAccounts/BankingAccounts";
+import Login from "../Login/Login";
 
 import "./App.css";
 
 function App() {
   const { token, setToken } = useToken();
-  console.log("App token:", token);
-
   if (!token) {
     return <Login setToken={setToken} />;
   }
-
-  return <Home />;
+  return <BankingAccounts />;
 }
 
 export default App;

@@ -1,10 +1,5 @@
 // Banking Account Data Access Layer
-const { db } = require("../datasources");
-const { snapshotToArray } = require("../helpers");
-
-// constants
-
-const collectionName = "BankingAccounts";
+const { db, collectionNames } = require("../datasources");
 
 // methods
 
@@ -12,7 +7,7 @@ const create = (data) => {
   const { userAccountId, balance, type } = data;
   const result = {};
   return new Promise((resolve, reject) => {
-    db.collection(collectionName)
+    db.collection(collectionNames.bankingAccounts)
       .add({ userAccountId, balance, type })
       .then((docRef) => {
         result.bankingAccountId = docRef.id;
@@ -27,7 +22,7 @@ const create = (data) => {
 const getOne = (data) => {
   const { bankingAccountId } = data;
   return new Promise((resolve, reject) => {
-    db.collection(collectionName)
+    db.collection(collectionNames.bankingAccounts)
       .doc(bankingAccountId)
       .get()
       .then((doc) => {
@@ -50,12 +45,16 @@ const getOne = (data) => {
 const getAll = (data) => {
   const { userAccountId } = data;
   return new Promise((resolve, reject) => {
-    db.collection(collectionName)
+    db.collection(collectionNames.bankingAccounts)
       .where("userAccountId", "==", userAccountId)
       .get()
       .then((querySnapshot) => {
+        const docs = [];
+        querySnapshot.forEach((doc) => {
+          docs.push({ bankingAccountId: doc.id, ...doc.data() });
+        });
         return resolve({
-          accounts: snapshotToArray(querySnapshot),
+          bankingAccounts: docs,
         });
       })
       .catch((error) => {
@@ -68,7 +67,9 @@ const getAll = (data) => {
 const update = (data) => {
   const { bankingAccountId, balance } = data;
   return new Promise((resolve, reject) => {
-    const docRef = db.collection(collectionName).doc(bankingAccountId);
+    const docRef = db
+      .collection(collectionNames.bankingAccounts)
+      .doc(bankingAccountId);
     return docRef
       .update({
         balance,
@@ -85,7 +86,9 @@ const update = (data) => {
 const discard = (data) => {
   const { bankingAccountId } = data;
   return new Promise((resolve, reject) => {
-    const docRef = db.collection(collectionName).doc(bankingAccountId);
+    const docRef = db
+      .collection(collectionNames.bankingAccounts)
+      .doc(bankingAccountId);
     return docRef
       .delete()
       .then(() => {

@@ -1,11 +1,6 @@
 // Banking Transactions Data Access Layer
 
-const { db } = require("../datasources");
-const { snapshotToArray } = require("../helpers");
-
-// constants
-
-const collectionName = "BankingTransactions";
+const { db, collectionNames } = require("../datasources");
 
 // methods
 
@@ -14,7 +9,7 @@ const create = (data) => {
   const result = { userAccountId, bankingAccountId, type, amount };
   return new Promise((resolve, reject) => {
     // create credentials
-    db.collection(collectionName)
+    db.collection(collectionNames.bankingTransactions)
       .add({ userAccountId, bankingAccountId, type, amount })
       .then((docRef) => {
         result.transactionId = docRef.id;
@@ -29,7 +24,7 @@ const create = (data) => {
 const getOne = (data) => {
   const { transactionId } = data;
   return new Promise((resolve, reject) => {
-    db.collection(collectionName)
+    db.collection(collectionNames.bankingTransactions)
       .doc(transactionId)
       .get()
       .then((doc) => {
@@ -52,12 +47,16 @@ const getOne = (data) => {
 const getAll = (data) => {
   const { bankingAccountId } = data;
   return new Promise((resolve, reject) => {
-    db.collection(collectionName)
+    db.collection(collectionNames.bankingTransactions)
       .where("bankingAccountId", "==", bankingAccountId)
       .get()
       .then((querySnapshot) => {
+        const docs = [];
+        querySnapshot.forEach((doc) => {
+          docs.push({ bankingTransactionId: doc.id, ...doc.data() });
+        });
         return resolve({
-          transactions: snapshotToArray(querySnapshot),
+          bankingTransactions: docs,
         });
       })
       .catch((error) => {

@@ -11,14 +11,6 @@ const createErrorResponse = (error) => {
   };
 };
 
-const snapshotToArray = (querySnapshot) => {
-  const docs = [];
-  querySnapshot.forEach((doc) => {
-    docs.push({ documentId: doc.id, ...doc.data() });
-  });
-  return docs;
-};
-
 // TODO: explain this
 const getHttpCode = (firebaseErrorCode) => {
   /*
@@ -135,6 +127,5 @@ AUTH_ERROR_CODES_MAP_DO_NOT_USE_INTERNALLY: {
 module.exports = {
   createErrorResponse,
   getHttpCode,
-  snapshotToArray,
   generateAccessToken,
 };

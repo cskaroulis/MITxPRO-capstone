@@ -1,4 +1,4 @@
-export const getList = (userAccountId, token) => {
+export const getAccounts = (userAccountId, token) => {
   if (!userAccountId) {
     return [];
   }

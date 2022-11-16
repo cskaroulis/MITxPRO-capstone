@@ -1,17 +1,48 @@
-import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+} from "react-router-dom";
+
 import useToken from "../../common/useToken";
 
-import BankingAccounts from "../BankingAccounts/BankingAccounts";
+import Header from "../Header/Header";
+import Accounts from "../Accounts/Accounts";
+import NewAccount from "../Accounts/NewAccount";
 import Login from "../Login/Login";
+import Signup from "../Signup/Signup";
+import Transactions from "../Transactions/Transactions";
+import NewTransaction from "../Transactions/NewTransaction";
 
+import "milligram";
 import "./App.css";
 
-function App() {
+const PrivateRoutes = () => {
+  const { token } = useToken();
+  return token ? <Outlet /> : <Navigate to="/login" />;
+};
+
+const App = () => {
   const { token, setToken } = useToken();
-  if (!token) {
-    return <Login setToken={setToken} />;
-  }
-  return <BankingAccounts />;
-}
+  return (
+    <main className="wrapper">
+      <Router>
+        {token && <Header />}
+        <Routes>
+          <Route element={<PrivateRoutes />}>
+            <Route path="/" element={<Accounts />} exact />
+            <Route path="/new-account" element={<NewAccount />} />
+            <Route path="/transactions" element={<Transactions />} />
+            <Route path="/new-transaction" element={<NewTransaction />} />
+          </Route>
+          <Route path="/login" element={<Login setToken={setToken} />} />
+          <Route path="/signup" element={<Signup />} />
+        </Routes>
+      </Router>
+    </main>
+  );
+};
 
 export default App;

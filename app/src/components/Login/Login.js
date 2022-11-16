@@ -1,24 +1,17 @@
 import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
-import { AppContext } from "../../common/context";
-import "./Login.css";
+import { Link, useNavigate } from "react-router-dom";
 
-const loginUser = async (credentials) => {
-  const endpoint = process.env.REACT_APP_API_ENDPOINT;
-  return fetch(endpoint + "sessions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(credentials),
-  }).then((data) => data.json());
-};
+import "milligram";
+
+import { AppContext } from "../../common/context";
+import { loginUser } from "./loginUser";
 
 export default function Login({ setToken }) {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const contextMgr = useContext(AppContext);
-  // const [context, setContext] = useContext(AppContext);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,11 +22,11 @@ export default function Login({ setToken }) {
     setToken(response?.token);
     contextMgr.token = response?.token;
     contextMgr.updateUser(response?.user?.userAccounts[0]);
-    console.log(">>> contextMgr.user:", contextMgr.user);
+    navigate("/");
   };
 
   return (
-    <div className="login-wrapper">
+    <section className="container" id="login">
       <h1>Please Log In</h1>
       <form onSubmit={handleSubmit}>
         <label>
@@ -52,7 +45,15 @@ export default function Login({ setToken }) {
           <button type="submit">Submit</button>
         </div>
       </form>
-    </div>
+
+      <Link
+        to={{
+          pathname: "/signup",
+        }}
+      >
+        Create a new account
+      </Link>
+    </section>
   );
 }
 

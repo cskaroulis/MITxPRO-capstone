@@ -1,12 +1,14 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 
 import { AppContext } from "../../common/context";
-import { getList } from "../Accounts/getAccounts";
+import { getAccounts } from "./getAccounts";
 
-import "./BankingAccounts.css";
+import "milligram";
 
-function BankingAccounts() {
+import { Breadcrumb, BreadcrumbItem } from "../../common/breadcrumbs";
+
+const Accounts = () => {
   const [accounts, setAccounts] = useState([]);
   const contextMgr = useContext(AppContext);
 
@@ -16,7 +18,7 @@ function BankingAccounts() {
       user: { userAccountId },
       token,
     } = contextMgr;
-    getList(userAccountId, token).then((response) => {
+    getAccounts(userAccountId, token).then((response) => {
       const { bankingAccounts } = response;
       if (mounted) {
         setAccounts(bankingAccounts);
@@ -26,8 +28,12 @@ function BankingAccounts() {
   }, [contextMgr]);
 
   return (
-    <div className="wrapper">
-      <h1>Your Accounts</h1>
+    <section className="container" id="accounts">
+      <h1>Accounts</h1>
+      <Breadcrumb>
+        <BreadcrumbItem to="/new-account">New Account</BreadcrumbItem>
+        <BreadcrumbItem to="/transactions">Transactions</BreadcrumbItem>
+      </Breadcrumb>
       <ul>
         {accounts.map((account, ndx) => (
           <li key={ndx}>
@@ -43,8 +49,7 @@ function BankingAccounts() {
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   );
-}
-
-export default BankingAccounts;
+};
+export default Accounts;

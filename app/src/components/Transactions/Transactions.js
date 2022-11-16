@@ -8,7 +8,8 @@ function Transactions() {
       <h1>Transactions</h1>
       <Breadcrumb>
         <BreadcrumbItem to="/">Return Home</BreadcrumbItem>
-        <BreadcrumbItem to="/new-transaction">New Transaction</BreadcrumbItem>
+        <BreadcrumbItem to="/new-transaction">Make a deposit</BreadcrumbItem>
+        <BreadcrumbItem to="/new-transaction">Make a withdrawal</BreadcrumbItem>
       </Breadcrumb>
     </section>
   );

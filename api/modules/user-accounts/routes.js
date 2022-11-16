@@ -15,8 +15,7 @@ router.post("/", function (req, res) {
 
   create({ email, password, firstName, lastName, phoneNumber })
     .then((user) => {
-      const token = generateAccessToken(email);
-      res.status(201).send({ user, token });
+      res.status(201).send({ user });
     })
     .catch((error) => {
       console.error(error);

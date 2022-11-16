@@ -29,7 +29,7 @@ const App = () => {
   const { token, setToken, removeToken } = useToken();
   return (
     <main className="wrapper">
-      <Router>
+      <Router basename="mitxpro-capstone">
         {token && <Header />}
         <Routes>
           <Route element={<PrivateRoutes />}>

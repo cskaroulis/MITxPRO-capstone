@@ -1,32 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
-import "./Login.css";
+import { Link, useNavigate } from "react-router-dom";
 
-const loginUser = async (credentials) => {
-  return fetch("http://localhost:5000/sessions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(credentials),
-  }).then((data) => data.json());
-};
+import "milligram";
+
+import { AppContext } from "../../common/context";
+import { loginUser } from "./loginUser";
 
 export default function Login({ setToken }) {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const contextMgr = useContext(AppContext);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = await loginUser({
+    const response = await loginUser({
       email,
       password,
     });
-    setToken(token);
+    setToken(response?.token);
+    contextMgr.token = response?.token;
+    contextMgr.updateUser(response?.user?.userAccounts[0]);
+    navigate("/");
   };
 
   return (
-    <div className="login-wrapper">
+    <section className="container" id="login">
       <h1>Please Log In</h1>
       <form onSubmit={handleSubmit}>
         <label>
@@ -40,11 +40,20 @@ export default function Login({ setToken }) {
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
+        <p>"congue.turpis.in@protonmail.net","HVN46JOU7TV"</p>
         <div>
           <button type="submit">Submit</button>
         </div>
       </form>
-    </div>
+
+      <Link
+        to={{
+          pathname: "/signup",
+        }}
+      >
+        Create a new account
+      </Link>
+    </section>
   );
 }
 

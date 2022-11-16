@@ -1,11 +1,6 @@
 // User Accounts Data Access Layer
 
-const { firebase, db } = require("../datasources");
-const { snapshotToArray, getDocRef } = require("../helpers");
-
-// constants
-
-const collectionName = "UserAccounts";
+const { firebase, db, collectionNames } = require("../datasources");
 
 // methods
 
@@ -21,10 +16,9 @@ const create = (data) => {
         // Signed in
         const userCredentialsId = userCredential?.user?.uid;
         result.userCredentialsId = userCredentialsId;
-        result.isAuthenticated = true;
         // create user account
         return db
-          .collection(collectionName)
+          .collection(collectionNames.userAccounts)
           .add({ userCredentialsId, firstName, lastName, phoneNumber });
       })
       .then((docRef) => {
@@ -40,7 +34,7 @@ const create = (data) => {
 const getOne = (data) => {
   const { userAccountId } = data;
   return new Promise((resolve, reject) => {
-    db.collection(collectionName)
+    db.collection(collectionNames.userAccounts)
       .doc(userAccountId)
       .get()
       .then((doc) => {
@@ -63,7 +57,9 @@ const getOne = (data) => {
 const update = (data) => {
   const { userAccountId, firstName, lastName, phoneNumber } = data;
   return new Promise((resolve, reject) => {
-    const docRef = db.collection(collectionName).doc(userAccountId);
+    const docRef = db
+      .collection(collectionNames.userAccounts)
+      .doc(userAccountId);
     return docRef
       .update({
         firstName,
@@ -82,7 +78,9 @@ const update = (data) => {
 const discard = (data) => {
   const { userAccountId } = data;
   return new Promise((resolve, reject) => {
-    const docRef = db.collection(collectionName).doc(userAccountId);
+    const docRef = db
+      .collection(collectionNames.userAccounts)
+      .doc(userAccountId);
     return docRef
       .delete()
       .then(() => {

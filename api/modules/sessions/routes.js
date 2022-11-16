@@ -15,7 +15,6 @@ router.post("/", function (req, res) {
     .catch((error) => {
       console.error(error);
       const result = createErrorResponse(error);
-      result.isAuthenticated = false;
       res.status(401).send(result);
     });
 });
@@ -28,7 +27,6 @@ router.delete("/", function (req, res) {
     .catch((error) => {
       console.error(error);
       const result = createErrorResponse(error);
-      result.isAuthenticated = false;
       res.status(401).send(result);
     });
 });

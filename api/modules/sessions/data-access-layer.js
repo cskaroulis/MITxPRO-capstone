@@ -1,6 +1,6 @@
 // User Sessions Data Access Layer
 
-const { firebase } = require("../datasources");
+const { firebase, db, collectionNames } = require("../datasources");
 
 const create = (data) => {
   const { email, password } = data;
@@ -10,11 +10,22 @@ const create = (data) => {
       .signInWithEmailAndPassword(email, password)
       .then((result) => {
         const { uid } = result.user;
+        return db
+          .collection(collectionNames.userAccounts)
+          .where("userCredentialsId", "==", uid)
+          .get();
+      })
+      .then((querySnapshot) => {
+        const docs = [];
+        querySnapshot.forEach((doc) => {
+          docs.push({ userAccountId: doc.id, ...doc.data() });
+        });
         return resolve({
-          userCredentialsId: uid,
+          userAccounts: docs,
         });
       })
       .catch((error) => {
+        console.error(error);
         return reject(error);
       });
   });

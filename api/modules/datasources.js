@@ -12,11 +12,14 @@ firebase.initializeApp({
 
 const db = firebase.firestore();
 
-const isAuthenticated = () => {
-  const user = firebase.auth().currentUser;
-  const result = { isAuthenticated: !!user, user };
-  console.log("auth check:", !!user);
-  return result;
+const collectionNames = {
+  userAccounts: "UserAccounts",
+  bankingAccounts: "BankingAccounts",
+  bankingTransactions: "BankingTransactions",
 };
 
-module.exports = { firebase, db, isAuthenticated };
+module.exports = {
+  firebase,
+  db,
+  collectionNames,
+};

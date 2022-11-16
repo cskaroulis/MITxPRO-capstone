@@ -8,7 +8,7 @@ const create = (data) => {
   const { email, password, firstName, lastName, phoneNumber } = data;
   const result = {};
   return new Promise((resolve, reject) => {
-    // create credentials
+    // create credentials first THEN the user account
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)

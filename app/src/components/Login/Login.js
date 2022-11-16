@@ -5,24 +5,30 @@ import { Link, useNavigate } from "react-router-dom";
 import "milligram";
 
 import { AppContext } from "../../common/context";
-import { loginUser } from "./loginUser";
+import { loginUser } from "./functions/loginUser";
 
-export default function Login({ setToken }) {
+const Login = ({ setToken }) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+
   const contextMgr = useContext(AppContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await loginUser({
-      email,
-      password,
-    });
-    setToken(response?.token);
-    contextMgr.token = response?.token;
-    contextMgr.updateUser(response?.user?.userAccounts[0]);
-    navigate("/");
+    try {
+      const response = await loginUser({
+        email: email.trim(),
+        password: password.trim(),
+      });
+      setToken(response?.token);
+      contextMgr.token = response?.token;
+      contextMgr.updateUser(response?.user?.userAccounts[0]);
+      navigate("/");
+    } catch (e) {
+      console.error(e);
+      // TODO: Display error to user
+    }
   };
 
   return (
@@ -40,7 +46,7 @@ export default function Login({ setToken }) {
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
-        <p>"congue.turpis.in@protonmail.net","HVN46JOU7TV"</p>
+        <p>[ fermentum@yahoo.couk MKV41UWB9NJ ]</p>
         <div>
           <button type="submit">Submit</button>
         </div>
@@ -55,8 +61,10 @@ export default function Login({ setToken }) {
       </Link>
     </section>
   );
-}
+};
 
 Login.propTypes = {
   setToken: PropTypes.func.isRequired,
 };
+
+export default Login;

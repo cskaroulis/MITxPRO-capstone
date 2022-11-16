@@ -21,7 +21,11 @@ const Logout = ({ removeToken }) => {
       removeToken();
       contextMgr.token = null;
       console.info("contextMgr:", contextMgr);
+<<<<<<< HEAD
       window.location.pathname = "/mitxpro-capstone/";
+=======
+      window.location.pathname = "/";
+>>>>>>> main
     },
     // eslint-disable-next-line
     []

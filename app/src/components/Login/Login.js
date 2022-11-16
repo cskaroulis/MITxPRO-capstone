@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "milligram";
 
 import { AppContext } from "../../common/context";
-import { loginUser } from "./loginUser";
+import { loginUser } from "./functions/loginUser";
 
 export default function Login({ setToken }) {
   const [email, setEmail] = useState();

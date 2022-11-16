@@ -12,6 +12,7 @@ import Header from "../Header/Header";
 import Accounts from "../Accounts/Accounts";
 import NewAccount from "../Accounts/NewAccount";
 import Login from "../Login/Login";
+import Logout from "../Logout/Logout";
 import Signup from "../Signup/Signup";
 import Transactions from "../Transactions/Transactions";
 import NewTransaction from "../Transactions/NewTransaction";
@@ -25,7 +26,7 @@ const PrivateRoutes = () => {
 };
 
 const App = () => {
-  const { token, setToken } = useToken();
+  const { token, setToken, removeToken } = useToken();
   return (
     <main className="wrapper">
       <Router>
@@ -36,6 +37,10 @@ const App = () => {
             <Route path="/new-account" element={<NewAccount />} />
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/new-transaction" element={<NewTransaction />} />
+            <Route
+              path="/logout"
+              element={<Logout removeToken={removeToken} />}
+            />
           </Route>
           <Route path="/login" element={<Login setToken={setToken} />} />
           <Route path="/signup" element={<Signup />} />

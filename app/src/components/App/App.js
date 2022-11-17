@@ -9,7 +9,8 @@ import {
 // React Notification
 import "react-notifications/lib/notifications.css";
 import { NotificationContainer } from "react-notifications";
-// info, success, warning, error
+// Types: info, success, warning, error
+// Usage:
 // NotificationManager.success(message, title, timeOutMs, callback, priority);
 
 import useToken from "../../common/useToken";

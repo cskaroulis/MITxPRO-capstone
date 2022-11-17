@@ -1,18 +1,17 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
 import { NotificationManager } from "react-notifications";
 
-import "milligram";
-
-import { AppContext } from "../../common/context";
+import { store } from "../../common/store";
 import { loginUser } from "./functions/loginUser";
+
+import "milligram";
 
 const Login = ({ setToken }) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
-  const contextMgr = useContext(AppContext);
   const navigate = useNavigate();
 
   // handlers
@@ -32,13 +31,14 @@ const Login = ({ setToken }) => {
         NotificationManager.success("Welcome back!", null, 2000);
 
         if (!!response?.token) {
+          store.clear(); // ok. Do not clear AFTER you set the token.
           setToken(response?.token);
-          contextMgr.token = response?.token;
         }
 
         const userData = response?.user?.userAccounts[0];
         if (userData) {
-          contextMgr.updateUser(userData);
+          const { userAccountId } = userData;
+          store.set("userAccountId", userAccountId);
         }
       }
     } catch (error) {

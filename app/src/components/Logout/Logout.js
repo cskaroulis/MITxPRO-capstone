@@ -1,16 +1,16 @@
-import { useEffect, useContext } from "react";
+import { useEffect } from "react";
 import PropTypes from "prop-types";
 import { NotificationManager } from "react-notifications";
 
-import { AppContext } from "../../common/context";
+import useToken from "../../common/useToken";
+import { store } from "../../common/store";
 import { logoutUser } from "./functions/logoutUser";
 
 const Logout = ({ removeToken }) => {
-  const contextMgr = useContext(AppContext);
+  const { token } = useToken();
 
   useEffect(
     () => {
-      const { token } = contextMgr;
       if (!token) return; // leave undefined
 
       const cleanUp = async (token) => {
@@ -24,7 +24,7 @@ const Logout = ({ removeToken }) => {
 
       cleanUp(token);
       removeToken();
-      contextMgr.token = null;
+      store.clear();
       window.location.pathname = "/mitxpro-capstone/";
     },
     // eslint-disable-next-line

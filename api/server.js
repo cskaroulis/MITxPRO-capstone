@@ -10,9 +10,6 @@ if (process?.env?.NODE_ENV !== "production") {
 // import the sub-apps
 const routes = require("./sub-apps/routes");
 
-// import the middleware
-// const authenticateToken = require("./middleware/authToken.js");
-
 const app = express();
 
 // used to serve static files from public directory

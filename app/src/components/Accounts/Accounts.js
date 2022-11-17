@@ -1,8 +1,12 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { NotificationManager } from "react-notifications";
 
-import { AppContext } from "../../common/context";
+import useToken from "../../common/useToken";
+import { store } from "../../common/store";
+import { alignCenter, alignRight } from "../../common/styling";
+import { formatCurrency } from "../../common/formatting";
+
 import { getAccounts } from "./functions/getAccounts";
 
 import "milligram";
@@ -11,37 +15,30 @@ import { Breadcrumb, BreadcrumbItem } from "../../common/breadcrumbs";
 
 const Accounts = () => {
   const [accounts, setAccounts] = useState([]);
-  const contextMgr = useContext(AppContext);
+
+  const { token } = useToken();
+  const userAccountId = store.get("userAccountId");
 
   // get data
-  useEffect(() => {
-    let mounted = true;
-    const {
-      user: { userAccountId },
-      token,
-    } = contextMgr;
-    getAccounts(userAccountId, token)
-      .then((response) => {
-        const { bankingAccounts } = response;
-        if (mounted) {
-          setAccounts(bankingAccounts);
-        }
-      })
-      .catch((error) => {
-        const { errorCode, errorMessage } = error;
-        NotificationManager.error(`${errorMessage} (${errorCode})`, "Error!");
-      });
-    return () => (mounted = false);
-  }, [contextMgr]);
-
-  // currency formatter
-  const currency = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  });
-
-  const alignCenter = { textAlign: "center" };
-  const alignRight = { textAlign: "right" };
+  useEffect(
+    () => {
+      let mounted = true;
+      getAccounts(userAccountId, token)
+        .then((response) => {
+          const { bankingAccounts } = response;
+          if (mounted) {
+            setAccounts(bankingAccounts);
+          }
+        })
+        .catch((error) => {
+          const { errorCode, errorMessage } = error;
+          NotificationManager.error(`${errorMessage} (${errorCode})`, "Error!");
+        });
+      return () => (mounted = false);
+    },
+    // eslint-disable-next-line
+    []
+  );
 
   return (
     <>
@@ -49,7 +46,6 @@ const Accounts = () => {
         <h1>Accounts</h1>
         <Breadcrumb>
           <BreadcrumbItem to="/new-account">New Account</BreadcrumbItem>
-          <BreadcrumbItem to="/transactions">Transactions</BreadcrumbItem>
         </Breadcrumb>
         <table>
           <thead>
@@ -64,16 +60,14 @@ const Accounts = () => {
               <tr key={ndx}>
                 <td>
                   <Link
-                    to={{
-                      pathname: "/transactions",
-                      state: { bankingAccountId: account.bankingAccountId },
-                    }}
+                    to={"/transactions"}
+                    state={{ bankingAccountId: account.bankingAccountId }}
                   >
-                    Family Checking
+                    {account.nickname}
                   </Link>
                 </td>
                 <td style={alignCenter}>{account.type}</td>
-                <td style={alignRight}>{currency.format(account.balance)}</td>
+                <td style={alignRight}>{formatCurrency(account.balance)}</td>
               </tr>
             ))}
           </tbody>

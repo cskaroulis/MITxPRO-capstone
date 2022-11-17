@@ -1,10 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NotificationManager } from "react-notifications";
 
 import "milligram";
 
-import { AppContext } from "../../common/context";
+// import { AppContext } from "../../common/context";
 import { signupUser } from "./functions/signupUser";
 
 const Signup = () => {
@@ -14,7 +14,7 @@ const Signup = () => {
   const [lastName, setLastName] = useState();
   const [phoneNumber, setPhoneNumber] = useState();
 
-  const contextMgr = useContext(AppContext);
+  // const contextMgr = useContext(AppContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -33,7 +33,6 @@ const Signup = () => {
         NotificationManager.error(`${errorMessage} (${errorCode})`, "Error!");
       } else {
         NotificationManager.success("Welcome aboard!", null, 2000);
-        contextMgr.updateUser(response);
       }
     } catch (error) {
       console.error(error.message);

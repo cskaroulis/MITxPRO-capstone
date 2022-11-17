@@ -1,10 +1,11 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NotificationManager } from "react-notifications";
 
+import useToken from "../../common/useToken";
+
 import "milligram";
 
-import { AppContext } from "../../common/context";
 import { createNewAccount } from "./functions/createNewAccount";
 import { Breadcrumb, BreadcrumbItem } from "../../common/breadcrumbs";
 
@@ -13,25 +14,16 @@ function NewAccount() {
   const [balance, setBalance] = useState(0);
   const [type, setType] = useState("checking");
 
-  const contextMgr = useContext(AppContext);
   const navigate = useNavigate();
+
+  const { token } = useToken();
+  const userAccountId = get("userAccountId");
 
   // handlers
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const {
-        user: { userAccountId },
-        token,
-      } = contextMgr;
-      console.info({
-        userAccountId,
-        token,
-        nickname,
-        balance,
-        type,
-      });
       const response = await createNewAccount({
         userAccountId,
         token,
@@ -50,7 +42,7 @@ function NewAccount() {
       console.error(error.message);
       NotificationManager.error("Account creation failed.", "Error!");
     }
-    navigate("/banking-accounts");
+    navigate("/");
   };
 
   return (

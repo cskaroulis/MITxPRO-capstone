@@ -622,6 +622,10 @@
   margin-bottom: 0
 }
 
+.breadcrumb {
+  margin-bottom: 3rem;
+}
+
 .breadcrumb ol {
   margin: 0;
   padding-left: 0;
@@ -685,10 +689,13 @@ table {
   border-radius: 50%;
   animation: spinner 1.5s linear infinite;
 }
-<<<<<<< HEAD
 
 form p {
   margin-bottom: 0
 }
-=======
->>>>>>> main
+
+.container input {
+  font-size: 1.6rem;
+  font-weight: normal;
+}
+

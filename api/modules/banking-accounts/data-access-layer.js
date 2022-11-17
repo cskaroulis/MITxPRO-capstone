@@ -4,11 +4,12 @@ const { db, collectionNames } = require("../datasources");
 // methods
 
 const create = (data) => {
-  const { userAccountId, balance, type } = data;
-  const result = {};
+  const { userAccountId, nickname, balance, type } = data;
+  const result = data;
+  console.info(data);
   return new Promise((resolve, reject) => {
     db.collection(collectionNames.bankingAccounts)
-      .add({ userAccountId, balance, type })
+      .add({ userAccountId, nickname, balance, type })
       .then((docRef) => {
         result.bankingAccountId = docRef.id;
         return resolve(result);

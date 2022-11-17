@@ -9,12 +9,12 @@ router.post("/", authenticateToken, function (req, res) {
   const { userAccountId, bankingAccountId, type, amount } = req.body;
   create({ userAccountId, bankingAccountId, type, amount })
     .then((transaction) => {
-      res.status(201).send(transaction);
+      res.status(201).json(transaction);
     })
     .catch((error) => {
       console.error(error);
       const result = createErrorResponse(error);
-      res.status(401).send(result);
+      res.status(401).json(result);
     });
 });
 
@@ -24,23 +24,23 @@ router.get("/", authenticateToken, function (req, res) {
     // get all transactions of an account
     getAll({ bankingAccountId })
       .then((transactions) => {
-        res.status(200).send(transactions);
+        res.status(200).json(transactions);
       })
       .catch((error) => {
         console.error(error);
         const result = createErrorResponse(error);
-        res.status(401).send(result);
+        res.status(401).json(result);
       });
   } else {
     // get a specific transaction
     getOne({ transactionId })
       .then((transaction) => {
-        res.status(200).send(transaction);
+        res.status(200).json(transaction);
       })
       .catch((error) => {
         console.error(error);
         const result = createErrorResponse(error);
-        res.status(401).send(result);
+        res.status(401).json(result);
       });
   }
 });

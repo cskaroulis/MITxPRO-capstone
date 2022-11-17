@@ -6,6 +6,13 @@ import {
   Outlet,
 } from "react-router-dom";
 
+// React Notification
+import "react-notifications/lib/notifications.css";
+import { NotificationContainer } from "react-notifications";
+// Types: info, success, warning, error
+// Usage:
+// NotificationManager.success(message, title, timeOutMs, callback, priority);
+
 import useToken from "../../common/useToken";
 
 import Header from "../Header/Header";
@@ -31,6 +38,7 @@ const App = () => {
     <main className="wrapper">
       <Router basename="mitxpro-capstone">
         {token && <Header />}
+        <NotificationContainer />
         <Routes>
           <Route element={<PrivateRoutes />}>
             <Route path="/" element={<Accounts />} exact />

@@ -1,31 +1,31 @@
-import { useEffect, useContext } from "react";
+import { useEffect } from "react";
 import PropTypes from "prop-types";
+import { NotificationManager } from "react-notifications";
 
-import { AppContext } from "../../common/context";
+// token
+import useToken from "../../common/useToken";
+
 import { logoutUser } from "./functions/logoutUser";
 
 const Logout = ({ removeToken }) => {
-  const contextMgr = useContext(AppContext);
+  const { token } = useToken();
 
   useEffect(
     () => {
-      const { token } = contextMgr;
-      if (!token) return null;
+      if (!token) return; // leave undefined
 
       const cleanUp = async (token) => {
-        await logoutUser(token);
+        try {
+          await logoutUser(token);
+        } catch (error) {
+          const { errorCode, errorMessage } = error;
+          NotificationManager.error(`${errorMessage} (${errorCode})`, "Error!");
+        }
       };
 
-      console.log("logging out");
       cleanUp(token);
       removeToken();
-      contextMgr.token = null;
-      console.info("contextMgr:", contextMgr);
-<<<<<<< HEAD
       window.location.pathname = "/mitxpro-capstone/";
-=======
-      window.location.pathname = "/";
->>>>>>> main
     },
     // eslint-disable-next-line
     []

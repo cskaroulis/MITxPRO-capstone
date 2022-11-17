@@ -1,8 +1,26 @@
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+
 import "milligram";
+
+// token
+import useToken from "../../common/useToken";
+
+// state mgmt
+import { useState as useGlobalState } from "@hookstate/core";
+import store from "../../common/store";
 
 import { Breadcrumb, BreadcrumbItem } from "../../common/breadcrumbs";
 
 function Transactions() {
+  const location = useLocation();
+  const { currentAccountState } = useGlobalState(store);
+  // const bankingAccountId = currentAccountState.get();
+  const bankingAccountId = location.state.bankingAccountId;
+  currentAccountState.set(bankingAccountId);
+  const { token } = useToken();
+  console.info(">>> bankingAccountId", bankingAccountId);
+
   return (
     <section className="container" id="transactions">
       <h1>Transactions</h1>

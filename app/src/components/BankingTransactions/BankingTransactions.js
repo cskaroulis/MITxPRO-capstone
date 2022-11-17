@@ -1,20 +1,30 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-import { AppContext } from "../../common/context";
+// token
+import useToken from "../../common/useToken";
+
+// state mgmt
+import { useState as useGlobalState } from "@hookstate/core";
+import store from "../../common/store";
+
 import { getList } from "./getList";
 
 import "./BankingTransactions.css";
 
 function BankingTransactions() {
   const [transactions, setTransactions] = useState([]);
-  const contextMgr = useContext(AppContext);
+
   const location = useLocation();
-  const bankingAccountId = location.state?.bankingAccountId;
+  const { currentAccountState } = useGlobalState(store);
+  // const bankingAccountId = currentAccountState.get();
+  const bankingAccountId = location.state.bankingAccountId;
+  currentAccountState.set(bankingAccountId);
+  const { token } = useToken();
+  console.info(">>> bankingAccountId", bankingAccountId);
 
   useEffect(() => {
     let mounted = true;
-    const { token } = contextMgr;
     getList(bankingAccountId, token).then((response) => {
       const { bankingTransactions } = response;
       if (mounted) {

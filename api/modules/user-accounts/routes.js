@@ -3,7 +3,7 @@
 const router = require("express").Router();
 
 const { create, getOne, update, discard } = require("./data-access-layer");
-const { createErrorResponse, generateAccessToken } = require("../helpers");
+const { createErrorResponse } = require("../helpers");
 const authenticateToken = require("../../middleware/authToken");
 
 router.post("/", function (req, res) {
@@ -14,13 +14,13 @@ router.post("/", function (req, res) {
   //
 
   create({ email, password, firstName, lastName, phoneNumber })
-    .then((user) => {
-      res.status(201).send({ user });
+    .then((userIds) => {
+      res.status(201).json(userIds);
     })
     .catch((error) => {
       console.error(error);
       const result = createErrorResponse(error);
-      res.status(401).send(result);
+      res.status(401).json(result);
     });
 });
 
@@ -28,12 +28,12 @@ router.get("/", authenticateToken, function (req, res) {
   const { userAccountId } = req.query;
   getOne({ userAccountId })
     .then((user) => {
-      res.status(200).send(user);
+      res.status(200).json(user);
     })
     .catch((error) => {
       console.error(error);
       const result = createErrorResponse(error);
-      res.status(401).send(result);
+      res.status(401).json(result);
     });
 });
 
@@ -42,12 +42,12 @@ router.put("/", authenticateToken, function (req, res) {
   const { firstName, lastName, phoneNumber } = req.body;
   update({ userAccountId, firstName, lastName, phoneNumber })
     .then((user) => {
-      res.status(200).send(user);
+      res.status(200).json(user);
     })
     .catch((error) => {
       console.error(error);
       const result = createErrorResponse(error);
-      res.status(401).send(result);
+      res.status(401).json(result);
     });
 });
 
@@ -55,12 +55,12 @@ router.delete("/", authenticateToken, function (req, res) {
   const { userAccountId } = req.query;
   discard({ auth, userAccountId })
     .then(() => {
-      res.status(200).send("user deleted");
+      res.status(200).json("user deleted");
     })
     .catch((error) => {
       console.error(error);
       const result = createErrorResponse(error);
-      res.status(401).send(result);
+      res.status(401).json(result);
     });
 });
 

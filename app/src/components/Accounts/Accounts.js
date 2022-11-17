@@ -1,7 +1,14 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { NotificationManager } from "react-notifications";
 
-import { AppContext } from "../../common/context";
+// token
+import useToken from "../../common/useToken";
+
+// state mgmt
+import { useState as useGlobalState } from "@hookstate/core";
+import store from "../../common/store";
+
 import { getAccounts } from "./functions/getAccounts";
 
 import "milligram";
@@ -10,23 +17,31 @@ import { Breadcrumb, BreadcrumbItem } from "../../common/breadcrumbs";
 
 const Accounts = () => {
   const [accounts, setAccounts] = useState([]);
-  const contextMgr = useContext(AppContext);
+  const { currentUserState } = useGlobalState(store);
+
+  const { token } = useToken();
+  const userAccountId = currentUserState.get();
 
   // get data
-  useEffect(() => {
-    let mounted = true;
-    const {
-      user: { userAccountId },
-      token,
-    } = contextMgr;
-    getAccounts(userAccountId, token).then((response) => {
-      const { bankingAccounts } = response;
-      if (mounted) {
-        setAccounts(bankingAccounts);
-      }
-    });
-    return () => (mounted = false);
-  }, [contextMgr]);
+  useEffect(
+    () => {
+      let mounted = true;
+      getAccounts(userAccountId, token)
+        .then((response) => {
+          const { bankingAccounts } = response;
+          if (mounted) {
+            setAccounts(bankingAccounts);
+          }
+        })
+        .catch((error) => {
+          const { errorCode, errorMessage } = error;
+          NotificationManager.error(`${errorMessage} (${errorCode})`, "Error!");
+        });
+      return () => (mounted = false);
+    },
+    // eslint-disable-next-line
+    []
+  );
 
   // currency formatter
   const currency = new Intl.NumberFormat("en-US", {
@@ -34,12 +49,8 @@ const Accounts = () => {
     currency: "USD",
   });
 
-<<<<<<< HEAD
   const alignCenter = { textAlign: "center" };
   const alignRight = { textAlign: "right" };
-=======
-  const centerCell = { textAlign: "center" };
->>>>>>> main
 
   return (
     <>
@@ -52,15 +63,9 @@ const Accounts = () => {
         <table>
           <thead>
             <tr>
-<<<<<<< HEAD
               <th>Account Nickname</th>
               <th style={alignCenter}>Account Type</th>
               <th style={alignRight}>Balance</th>
-=======
-              <th>Account Name</th>
-              <th>Account Type</th>
-              <th>Balance</th>
->>>>>>> main
             </tr>
           </thead>
           <tbody>
@@ -68,21 +73,14 @@ const Accounts = () => {
               <tr key={ndx}>
                 <td>
                   <Link
-                    to={{
-                      pathname: "/transactions",
-                      state: { bankingAccountId: account.bankingAccountId },
-                    }}
+                    to={"/transactions"}
+                    state={{ bankingAccountId: account.bankingAccountId }}
                   >
-                    Family Checking
+                    {account.nickname}
                   </Link>
                 </td>
-<<<<<<< HEAD
                 <td style={alignCenter}>{account.type}</td>
                 <td style={alignRight}>{currency.format(account.balance)}</td>
-=======
-                <td style={centerCell}>{account.type}</td>
-                <td>{currency.format(account.balance)}</td>
->>>>>>> main
               </tr>
             ))}
           </tbody>

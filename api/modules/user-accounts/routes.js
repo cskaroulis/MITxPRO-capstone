@@ -3,7 +3,11 @@
 const router = require("express").Router();
 
 const { create, getOne, update, discard } = require("./data-access-layer");
+<<<<<<< HEAD
 const { createErrorResponse } = require("../../common/helpers");
+=======
+const { createErrorResponse } = require("../helpers");
+>>>>>>> main
 const authenticateToken = require("../../middleware/authToken");
 
 router.post("/", function (req, res) {

@@ -2,7 +2,10 @@
 
 const router = require("express").Router();
 const { create, discard } = require("./data-access-layer");
-const { createErrorResponse, generateAccessToken } = require("../helpers");
+const {
+  createErrorResponse,
+  generateAccessToken,
+} = require("../../common/helpers");
 
 router.post("/", function (req, res) {
   const { email, password } = req.body;

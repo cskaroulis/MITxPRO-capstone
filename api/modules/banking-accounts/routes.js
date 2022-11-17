@@ -8,7 +8,7 @@ const {
   update,
   discard,
 } = require("./data-access-layer");
-const { createErrorResponse } = require("../helpers");
+const { createErrorResponse } = require("../../common/helpers");
 
 router.post("/", authenticateToken, function (req, res) {
   const { userAccountId, nickname, balance = 0, type = "checking" } = req.body;

@@ -3,7 +3,7 @@
 const router = require("express").Router();
 const authenticateToken = require("../../middleware/authToken");
 const { create, getOne, getAll } = require("./data-access-layer");
-const { createErrorResponse } = require("../helpers");
+const { createErrorResponse } = require("../../common/helpers");
 
 router.post("/", authenticateToken, function (req, res) {
   const { userAccountId, bankingAccountId, type, amount } = req.body;

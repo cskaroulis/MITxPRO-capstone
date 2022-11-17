@@ -1,8 +1,24 @@
-import { createState } from "@hookstate/core";
+const customizeKey = (key) => {
+  return `capstone-bank-${key}`;
+};
 
-const store = createState({
-  currentUserState: "",
-  currentAccountState: "",
-});
+const get = (key) => {
+  const customKey = customizeKey(key);
+  return localStorage.getItem(customKey);
+};
 
-export default store;
+const set = (key, value) => {
+  const customKey = customizeKey(key);
+  localStorage.setItem(customKey, value);
+};
+
+const remove = (key) => {
+  const customKey = customizeKey(key);
+  localStorage.removeItem(customKey);
+};
+
+const clear = () => {
+  localStorage.clear();
+};
+
+export const store = { get, set, remove, clear };

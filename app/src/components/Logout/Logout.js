@@ -2,9 +2,8 @@ import { useEffect } from "react";
 import PropTypes from "prop-types";
 import { NotificationManager } from "react-notifications";
 
-// token
 import useToken from "../../common/useToken";
-
+import { store } from "../../common/store";
 import { logoutUser } from "./functions/logoutUser";
 
 const Logout = ({ removeToken }) => {
@@ -25,6 +24,7 @@ const Logout = ({ removeToken }) => {
 
       cleanUp(token);
       removeToken();
+      store.clear();
       window.location.pathname = "/mitxpro-capstone/";
     },
     // eslint-disable-next-line

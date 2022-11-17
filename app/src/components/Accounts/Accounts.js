@@ -2,12 +2,10 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { NotificationManager } from "react-notifications";
 
-// token
 import useToken from "../../common/useToken";
-
-// state mgmt
-import { useState as useGlobalState } from "@hookstate/core";
-import store from "../../common/store";
+import { store } from "../../common/store";
+import { alignCenter, alignRight } from "../../common/styling";
+import { formatCurrency } from "../../common/formatting";
 
 import { getAccounts } from "./functions/getAccounts";
 
@@ -17,10 +15,9 @@ import { Breadcrumb, BreadcrumbItem } from "../../common/breadcrumbs";
 
 const Accounts = () => {
   const [accounts, setAccounts] = useState([]);
-  const { currentUserState } = useGlobalState(store);
 
   const { token } = useToken();
-  const userAccountId = currentUserState.get();
+  const userAccountId = store.get("userAccountId");
 
   // get data
   useEffect(
@@ -43,22 +40,12 @@ const Accounts = () => {
     []
   );
 
-  // currency formatter
-  const currency = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  });
-
-  const alignCenter = { textAlign: "center" };
-  const alignRight = { textAlign: "right" };
-
   return (
     <>
       <section className="container" id="accounts">
         <h1>Accounts</h1>
         <Breadcrumb>
           <BreadcrumbItem to="/new-account">New Account</BreadcrumbItem>
-          <BreadcrumbItem to="/transactions">Transactions</BreadcrumbItem>
         </Breadcrumb>
         <table>
           <thead>
@@ -80,7 +67,7 @@ const Accounts = () => {
                   </Link>
                 </td>
                 <td style={alignCenter}>{account.type}</td>
-                <td style={alignRight}>{currency.format(account.balance)}</td>
+                <td style={alignRight}>{formatCurrency(account.balance)}</td>
               </tr>
             ))}
           </tbody>

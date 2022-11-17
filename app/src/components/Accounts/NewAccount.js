@@ -2,16 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NotificationManager } from "react-notifications";
 
-// token
 import useToken from "../../common/useToken";
-
-// state mgmt
-import { useState as useGlobalState } from "@hookstate/core";
-import store from "../../common/store";
 
 import "milligram";
 
-// import { AppContext } from "../../common/context";
 import { createNewAccount } from "./functions/createNewAccount";
 import { Breadcrumb, BreadcrumbItem } from "../../common/breadcrumbs";
 
@@ -20,25 +14,16 @@ function NewAccount() {
   const [balance, setBalance] = useState(0);
   const [type, setType] = useState("checking");
 
-  const { currentUserState } = useGlobalState(store);
   const navigate = useNavigate();
 
-  // const contextMgr = useContext(AppContext);
-  const userAccountId = currentUserState.get();
   const { token } = useToken();
+  const userAccountId = get("userAccountId");
 
   // handlers
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.info({
-        userAccountId,
-        token,
-        nickname,
-        balance,
-        type,
-      });
       const response = await createNewAccount({
         userAccountId,
         token,

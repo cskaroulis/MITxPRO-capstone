@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
+import { NotificationManager } from "react-notifications";
 
 import { AppContext } from "../../common/context";
 import { getAccounts } from "./functions/getAccounts";
@@ -19,12 +20,17 @@ const Accounts = () => {
       user: { userAccountId },
       token,
     } = contextMgr;
-    getAccounts(userAccountId, token).then((response) => {
-      const { bankingAccounts } = response;
-      if (mounted) {
-        setAccounts(bankingAccounts);
-      }
-    });
+    getAccounts(userAccountId, token)
+      .then((response) => {
+        const { bankingAccounts } = response;
+        if (mounted) {
+          setAccounts(bankingAccounts);
+        }
+      })
+      .catch((error) => {
+        const { errorCode, errorMessage } = error;
+        NotificationManager.error(`${errorMessage} (${errorCode})`, "Error!");
+      });
     return () => (mounted = false);
   }, [contextMgr]);
 
@@ -34,12 +40,8 @@ const Accounts = () => {
     currency: "USD",
   });
 
-<<<<<<< HEAD
   const alignCenter = { textAlign: "center" };
   const alignRight = { textAlign: "right" };
-=======
-  const centerCell = { textAlign: "center" };
->>>>>>> main
 
   return (
     <>
@@ -52,15 +54,9 @@ const Accounts = () => {
         <table>
           <thead>
             <tr>
-<<<<<<< HEAD
               <th>Account Nickname</th>
               <th style={alignCenter}>Account Type</th>
               <th style={alignRight}>Balance</th>
-=======
-              <th>Account Name</th>
-              <th>Account Type</th>
-              <th>Balance</th>
->>>>>>> main
             </tr>
           </thead>
           <tbody>
@@ -76,13 +72,8 @@ const Accounts = () => {
                     Family Checking
                   </Link>
                 </td>
-<<<<<<< HEAD
                 <td style={alignCenter}>{account.type}</td>
                 <td style={alignRight}>{currency.format(account.balance)}</td>
-=======
-                <td style={centerCell}>{account.type}</td>
-                <td>{currency.format(account.balance)}</td>
->>>>>>> main
               </tr>
             ))}
           </tbody>

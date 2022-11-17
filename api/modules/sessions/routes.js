@@ -10,24 +10,24 @@ router.post("/", function (req, res) {
     .then((user) => {
       console.info("session created:", user);
       const token = generateAccessToken(email);
-      res.status(201).send({ user, token });
+      res.status(201).json({ user, token });
     })
     .catch((error) => {
       console.error(error);
       const result = createErrorResponse(error);
-      res.status(401).send(result);
+      res.status(401).json(result);
     });
 });
 
 router.delete("/", function (req, res) {
   discard()
     .then(() => {
-      res.status(200).send("session deleted");
+      res.status(200).json("session deleted");
     })
     .catch((error) => {
       console.error(error);
       const result = createErrorResponse(error);
-      res.status(401).send(result);
+      res.status(401).json(result);
     });
 });
 

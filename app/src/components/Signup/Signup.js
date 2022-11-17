@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { NotificationManager } from "react-notifications";
 
 import "milligram";
 
@@ -18,14 +19,27 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await signupUser({
-      email: email.trim(),
-      password: password.trim(),
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
-      phoneNumber: phoneNumber.trim(),
-    });
-    contextMgr.updateUser(response);
+
+    try {
+      const response = await signupUser({
+        email: email.trim(),
+        password: password.trim(),
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        phoneNumber: phoneNumber.trim(),
+      });
+      if (response?.errorCode) {
+        const { errorCode, errorMessage } = response;
+        NotificationManager.error(`${errorMessage} (${errorCode})`, "Error!");
+      } else {
+        NotificationManager.success("Welcome aboard!", null, 2000);
+        contextMgr.updateUser(response);
+      }
+    } catch (error) {
+      console.error(error.message);
+      NotificationManager.error("Login failed.", "Error!");
+    }
+
     navigate("/login");
   };
 

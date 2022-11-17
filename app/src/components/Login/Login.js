@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
+import { NotificationManager } from "react-notifications";
 
 import "milligram";
 
@@ -14,6 +15,8 @@ const Login = ({ setToken }) => {
   const contextMgr = useContext(AppContext);
   const navigate = useNavigate();
 
+  // handlers
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -21,14 +24,28 @@ const Login = ({ setToken }) => {
         email: email.trim(),
         password: password.trim(),
       });
-      setToken(response?.token);
-      contextMgr.token = response?.token;
-      contextMgr.updateUser(response?.user?.userAccounts[0]);
-      navigate("/");
-    } catch (e) {
-      console.error(e);
-      // TODO: Display error to user
+
+      if (response?.errorCode) {
+        const { errorCode, errorMessage } = response;
+        NotificationManager.error(`${errorMessage} (${errorCode})`, "Error!");
+      } else {
+        NotificationManager.success("Welcome back!", null, 2000);
+
+        if (!!response?.token) {
+          setToken(response?.token);
+          contextMgr.token = response?.token;
+        }
+
+        const userData = response?.user?.userAccounts[0];
+        if (userData) {
+          contextMgr.updateUser(userData);
+        }
+      }
+    } catch (error) {
+      console.error(error.message);
+      NotificationManager.error("Login failed.", "Error!");
     }
+    navigate("/");
   };
 
   return (

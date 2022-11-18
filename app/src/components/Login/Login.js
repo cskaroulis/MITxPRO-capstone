@@ -37,7 +37,9 @@ const Login = ({ setToken }) => {
 
         const userData = response?.user?.userAccounts[0];
         if (userData) {
-          const { userAccountId } = userData;
+          const { userAccountId, firstName, email } = userData;
+          store.set("firstName", firstName);
+          store.set("email", email);
           store.set("userAccountId", userAccountId);
         }
       }
@@ -50,7 +52,7 @@ const Login = ({ setToken }) => {
 
   return (
     <section className="container" id="login">
-      <h1>Please Log In</h1>
+      <h1>Please log in</h1>
       <form onSubmit={handleSubmit}>
         <label>
           <p>Email</p>

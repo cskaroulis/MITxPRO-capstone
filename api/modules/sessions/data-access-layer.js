@@ -18,7 +18,7 @@ const create = (data) => {
       .then((querySnapshot) => {
         const docs = [];
         querySnapshot.forEach((doc) => {
-          docs.push({ userAccountId: doc.id, ...doc.data() });
+          docs.push({ userAccountId: doc.id, ...doc.data(), email });
         });
         return resolve({
           userAccounts: docs,

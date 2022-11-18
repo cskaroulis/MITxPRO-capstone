@@ -6,7 +6,7 @@ const { db, collectionNames } = require("../datasources");
 
 const create = (data) => {
   const { userAccountId, bankingAccountId, type, amount } = data;
-  const result = { userAccountId, bankingAccountId, type, amount };
+  const result = data;
   return new Promise((resolve, reject) => {
     // create credentials
     db.collection(collectionNames.bankingTransactions)

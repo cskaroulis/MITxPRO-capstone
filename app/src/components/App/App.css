@@ -24,6 +24,10 @@
   font-size: 2rem
 }
 
+.wrapper .container h1 i {
+  font-family: serif;
+}
+
 .wrapper>.container {
   padding-bottom: 10rem;
   padding-top: 10rem
@@ -162,9 +166,15 @@
 
 .navigation .navigation-item {
   float: left;
+  line-height: 2.6;
   margin-bottom: 0;
-  margin-left: 2.5rem;
+  margin-left: 4.5rem;
   position: relative
+}
+
+.navigation .navigation-item.greeting {
+  font-size: 1.6rem;
+  line-height: 3.6;
 }
 
 .navigation .img {
@@ -695,10 +705,36 @@ form p {
 }
 
 .container input {
-  font-size: 1.6rem;
-  font-weight: normal;
+  color: dimgrey;
+  font-size: 1.8rem;
+  height: 5.8rem;
+  font-weight: 100;
 }
 
 #new-transaction input {
   width: 250px;
 }
+
+span.highlight {
+  color: indigo;
+  font-family: ui-monospace
+}
+
+.balance-container {
+  background-color: whitesmoke;
+  color: lightslategray;
+  margin-top: 5rem;
+  padding-right: 1rem;
+  padding: 1px;
+  text-align: center;
+  width: 100%;
+}
+
+.balance-amount {
+  font-weight: bold;
+}
+
+#transactions table {
+  margin-top: 0;
+}
+

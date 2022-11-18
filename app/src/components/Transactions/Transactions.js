@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { NotificationManager } from "react-notifications";
 
 import { Breadcrumb, BreadcrumbItem } from "../../common/breadcrumbs";
@@ -12,12 +12,13 @@ import { getTransactions } from "./functions/getTransactions";
 import "milligram";
 
 function Transactions() {
+  const [nickname, setNickname] = useState();
   const [transactions, setTransactions] = useState([]);
 
   const { token } = useToken();
   const location = useLocation();
 
-  const readData = () => {
+  const getId = () => {
     const id = !!location?.state?.bankingAccountId
       ? location.state.bankingAccountId
       : store.get("bankingAccountId");
@@ -29,11 +30,45 @@ function Transactions() {
     return id;
   };
 
+  const getNickname = () => {
+    const nickname = !!location?.state?.nickname
+      ? location.state.nickname
+      : store.get("nickname");
+    if (!nickname) {
+      const msg = "Nickname not found";
+      console.error(msg);
+    }
+    return nickname;
+  };
+
+  const calculateBalance = () => {
+    let balance = 0;
+    transactions.map((transaction) => {
+      if (transaction.type === "deposit") {
+        balance += parseFloat(transaction.amount);
+      } else {
+        balance -= parseFloat(transaction.amount);
+      }
+      return balance;
+    });
+    return balance;
+  };
+
   useEffect(
     () => {
       let mounted = true;
-      const id = readData();
-      store.set("bankingAccountId", id);
+      // id
+      const id = getId();
+      if (id) {
+        store.set("bankingAccountId", id);
+      }
+      // nickname
+      const nickname = getNickname();
+      if (nickname) {
+        setNickname(nickname);
+        store.set("nickname", nickname);
+      }
+      // get data
       getTransactions(id, token).then((response) => {
         const { bankingTransactions } = response;
         if (mounted) {
@@ -48,7 +83,9 @@ function Transactions() {
 
   return (
     <section className="container" id="transactions">
-      <h1>Your Banking Transactions</h1>
+      <h1>
+        <span className="highlight">{nickname}</span> transactions
+      </h1>
       <Breadcrumb>
         <BreadcrumbItem to="/">Return Home</BreadcrumbItem>
         <BreadcrumbItem to="/new-transaction" state={{ type: "deposit" }}>
@@ -58,6 +95,12 @@ function Transactions() {
           Make a withdrawal
         </BreadcrumbItem>
       </Breadcrumb>
+      <div className="balance-container">
+        Current balance: &nbsp;
+        <span className="balance-amount">
+          {formatCurrency(calculateBalance())}
+        </span>
+      </div>
       <table>
         <thead>
           <tr>
@@ -71,16 +114,7 @@ function Transactions() {
           {transactions.length ? (
             transactions.map((transaction, ndx) => (
               <tr key={ndx}>
-                <td>
-                  <Link
-                    to={"/transactions"}
-                    state={{
-                      bankingTransactionId: transaction.bankingTransactionId,
-                    }}
-                  >
-                    {transaction.bankingTransactionId}
-                  </Link>
-                </td>
+                <td>{transaction.bankingTransactionId}</td>
                 <td style={alignCenter}>{transaction.date || "00/00/00"}</td>
                 <td style={alignCenter}>{transaction.type}</td>
                 <td style={alignRight}>{formatCurrency(transaction.amount)}</td>
@@ -89,7 +123,7 @@ function Transactions() {
           ) : (
             <tr>
               <td colSpan="4" style={alignCenter}>
-                No transactions found.
+                Please make your first deposit.
               </td>
             </tr>
           )}

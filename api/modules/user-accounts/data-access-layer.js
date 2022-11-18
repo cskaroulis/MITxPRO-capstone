@@ -6,7 +6,7 @@ const { firebase, db, collectionNames } = require("../datasources");
 
 const create = (data) => {
   const { email, password, firstName, lastName, phoneNumber } = data;
-  const result = {};
+  const result = data;
   return new Promise((resolve, reject) => {
     // create credentials first THEN the user account
     firebase

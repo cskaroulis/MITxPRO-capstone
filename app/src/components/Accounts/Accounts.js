@@ -18,6 +18,7 @@ const Accounts = () => {
 
   const { token } = useToken();
   const userAccountId = store.get("userAccountId");
+  const firstName = store.get("firstName");
 
   // get data
   useEffect(
@@ -43,7 +44,9 @@ const Accounts = () => {
   return (
     <>
       <section className="container" id="accounts">
-        <h1>Accounts</h1>
+        <h1>
+          Here are your accounts <span className="highlight">{firstName}</span>.
+        </h1>
         <Breadcrumb>
           <BreadcrumbItem to="/new-account">New Account</BreadcrumbItem>
         </Breadcrumb>
@@ -62,7 +65,10 @@ const Accounts = () => {
                   <td>
                     <Link
                       to={"/transactions"}
-                      state={{ bankingAccountId: account.bankingAccountId }}
+                      state={{
+                        bankingAccountId: account.bankingAccountId,
+                        nickname: account.nickname,
+                      }}
                     >
                       {account.nickname}
                     </Link>

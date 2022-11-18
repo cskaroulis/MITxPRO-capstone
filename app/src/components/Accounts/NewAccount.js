@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { NotificationManager } from "react-notifications";
 
 import useToken from "../../common/useToken";
+import { store } from "../../common/store";
 
 import "milligram";
 
@@ -17,7 +18,7 @@ function NewAccount() {
   const navigate = useNavigate();
 
   const { token } = useToken();
-  const userAccountId = get("userAccountId");
+  const userAccountId = store.get("userAccountId");
 
   // handlers
 
@@ -49,7 +50,7 @@ function NewAccount() {
     <section className="container" id="new-account">
       <h1>New Account</h1>
       <Breadcrumb>
-        <BreadcrumbItem to="/">Return Home</BreadcrumbItem>
+        <BreadcrumbItem to="/transactions">Return Home</BreadcrumbItem>
       </Breadcrumb>
       <form onSubmit={handleSubmit}>
         <label>

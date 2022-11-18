@@ -699,3 +699,6 @@ form p {
   font-weight: normal;
 }
 
+#new-transaction input {
+  width: 250px;
+}

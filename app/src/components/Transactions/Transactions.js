@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { NotificationManager } from "react-notifications";
 
 import { Breadcrumb, BreadcrumbItem } from "../../common/breadcrumbs";
 import useToken from "../../common/useToken";
@@ -16,15 +17,22 @@ function Transactions() {
   const { token } = useToken();
   const location = useLocation();
 
-  const readIdFromLocationState = () => {
-    const bankingAccountId = location.state.bankingAccountId;
-    return bankingAccountId;
+  const readData = () => {
+    const id = !!location?.state?.bankingAccountId
+      ? location.state.bankingAccountId
+      : store.get("bankingAccountId");
+    if (!id) {
+      const msg = "Banking account id not found";
+      console.error(msg);
+      NotificationManager.error(msg, "Error!");
+    }
+    return id;
   };
 
   useEffect(
     () => {
       let mounted = true;
-      const id = readIdFromLocationState();
+      const id = readData();
       store.set("bankingAccountId", id);
       getTransactions(id, token).then((response) => {
         const { bankingTransactions } = response;
@@ -43,34 +51,48 @@ function Transactions() {
       <h1>Your Banking Transactions</h1>
       <Breadcrumb>
         <BreadcrumbItem to="/">Return Home</BreadcrumbItem>
-        <BreadcrumbItem to="/new-transaction">Make a deposit</BreadcrumbItem>
-        <BreadcrumbItem to="/new-transaction">Make a withdrawal</BreadcrumbItem>
+        <BreadcrumbItem to="/new-transaction" state={{ type: "deposit" }}>
+          Make a deposit
+        </BreadcrumbItem>
+        <BreadcrumbItem to="/new-transaction" state={{ type: "withdrawal" }}>
+          Make a withdrawal
+        </BreadcrumbItem>
       </Breadcrumb>
       <table>
         <thead>
           <tr>
             <th>Transaction Code</th>
-            <th>Date</th>
+            <th style={alignCenter}>Date</th>
             <th style={alignCenter}>Type</th>
             <th style={alignRight}>Amount</th>
           </tr>
         </thead>
         <tbody>
-          {transactions.map((transaction, ndx) => (
-            <tr key={ndx}>
-              <td>
-                <Link
-                  to={"/transactions"}
-                  state={{ transactionId: transaction.transactionId }}
-                >
-                  {transaction.id}
-                </Link>
+          {transactions.length ? (
+            transactions.map((transaction, ndx) => (
+              <tr key={ndx}>
+                <td>
+                  <Link
+                    to={"/transactions"}
+                    state={{
+                      bankingTransactionId: transaction.bankingTransactionId,
+                    }}
+                  >
+                    {transaction.bankingTransactionId}
+                  </Link>
+                </td>
+                <td style={alignCenter}>{transaction.date || "00/00/00"}</td>
+                <td style={alignCenter}>{transaction.type}</td>
+                <td style={alignRight}>{formatCurrency(transaction.amount)}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="4" style={alignCenter}>
+                No transactions found.
               </td>
-              <td style={alignCenter}>{transaction.type}</td>
-              <td style={alignCenter}>{transaction.date}</td>
-              <td style={alignRight}>{formatCurrency(transaction.amount)}</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </section>

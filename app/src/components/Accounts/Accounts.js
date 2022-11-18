@@ -56,20 +56,28 @@ const Accounts = () => {
             </tr>
           </thead>
           <tbody>
-            {accounts.map((account, ndx) => (
-              <tr key={ndx}>
-                <td>
-                  <Link
-                    to={"/transactions"}
-                    state={{ bankingAccountId: account.bankingAccountId }}
-                  >
-                    {account.nickname}
-                  </Link>
+            {accounts.length ? (
+              accounts.map((account, ndx) => (
+                <tr key={ndx}>
+                  <td>
+                    <Link
+                      to={"/transactions"}
+                      state={{ bankingAccountId: account.bankingAccountId }}
+                    >
+                      {account.nickname}
+                    </Link>
+                  </td>
+                  <td style={alignCenter}>{account.type}</td>
+                  <td style={alignRight}>{formatCurrency(account.balance)}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="3" style={alignCenter}>
+                  Please open your first account.
                 </td>
-                <td style={alignCenter}>{account.type}</td>
-                <td style={alignRight}>{formatCurrency(account.balance)}</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </section>

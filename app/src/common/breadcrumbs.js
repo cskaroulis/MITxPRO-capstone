@@ -6,8 +6,10 @@ export const Breadcrumb = ({ children }) => (
   </nav>
 );
 
-export const BreadcrumbItem = ({ children, to, ...props }) => (
+export const BreadcrumbItem = ({ children, to, state, ...props }) => (
   <li {...props}>
-    <Link to={to}>{children}</Link>
+    <Link to={to} state={state}>
+      {children}
+    </Link>
   </li>
 );

@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useLocation } from "react-router-dom";
-import { NotificationManager } from "react-notifications";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { Breadcrumb, BreadcrumbItem } from "../../common/breadcrumbs";
 import useToken from "../../common/useToken";
 import { store } from "../../common/store";
 import { alignCenter, alignRight } from "../../common/styling";
 import { formatCurrency } from "../../common/formatting";
+import { isError, handleError } from "../../common/errorHandling";
 import { getTransactions } from "./functions/getTransactions";
 
 import "milligram";
@@ -19,6 +19,17 @@ function Transactions() {
 
   const { token } = useToken();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const dealWithIt = (error) => {
+    const { mustLogout } = handleError(
+      "Failed to retrieve your transactions:",
+      error
+    );
+    if (mustLogout) {
+      navigate("/logout");
+    }
+  };
 
   useEffect(
     () => {
@@ -36,13 +47,12 @@ function Transactions() {
           nickname.current = store.get("nickname");
         }
         if (!bankingAccountId) {
-          const msg = "Banking account id not found";
-          console.error(msg);
-          NotificationManager.error(msg, "Error!");
+          const errorMessage = "Banking account id not found";
+          dealWithIt({ errorMessage });
         }
         if (!nickname) {
-          const msg = "Nickname not found";
-          console.error(msg);
+          const errorMessage = "Nickname not found";
+          dealWithIt({ errorMessage });
         }
       }
       return () => (mounted = false);
@@ -54,14 +64,26 @@ function Transactions() {
   useEffect(
     () => {
       let mounted = true;
-      // get data
-      getTransactions(bankingAccountId.current, token).then((response) => {
-        const { balance, bankingTransactions } = response;
-        if (mounted) {
-          setTotalBalance(balance);
-          setTransactions(bankingTransactions);
-        }
-      });
+      try {
+        // get data
+        getTransactions(bankingAccountId.current, token)
+          .then((response) => {
+            if (isError(response)) {
+              dealWithIt(response);
+            } else {
+              const { balance, bankingTransactions } = response;
+              if (mounted) {
+                setTotalBalance(balance);
+                setTransactions(bankingTransactions);
+              }
+            }
+          })
+          .catch((error) => {
+            dealWithIt(error);
+          });
+      } catch (error) {
+        dealWithIt(error);
+      }
       return () => (mounted = false);
     },
     // eslint-disable-next-line

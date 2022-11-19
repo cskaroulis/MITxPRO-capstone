@@ -2,31 +2,26 @@ export const createNewTransaction = async (data) => {
   const { userAccountId, bankingAccountId, token, type, amount } = data;
   if (!userAccountId) {
     return Promise.reject({
-      errorCode: "invalid-params",
       errorMessage: "Missing userAccountId",
     });
   }
   if (!bankingAccountId) {
     return Promise.reject({
-      errorCode: "invalid-params",
       errorMessage: "Missing userAccountId",
     });
   }
   if (!token) {
     return Promise.reject({
-      errorCode: "invalid-params",
       errorMessage: "Missing token",
     });
   }
   if (!type) {
     return Promise.reject({
-      errorCode: "invalid-params",
       errorMessage: "Missing transaction type",
     });
   }
   if (!amount) {
     return Promise.reject({
-      errorCode: "invalid-params",
       errorMessage: "Missing transaction amount",
     });
   } else {

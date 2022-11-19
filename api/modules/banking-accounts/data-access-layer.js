@@ -34,7 +34,6 @@ const getOne = (data) => {
           resolve([{ ...doc.data() }]);
         } else {
           reject({
-            errorCode: "not found",
             errorMessage: "banking account not found",
           });
         }

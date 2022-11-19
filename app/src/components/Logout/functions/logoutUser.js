@@ -1,7 +1,6 @@
 export const logoutUser = async (token) => {
   if (!token) {
     return Promise.reject({
-      errorCode: "invalid-params",
       errorMessage: "Missing token",
     });
   }

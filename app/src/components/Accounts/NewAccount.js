@@ -5,6 +5,7 @@ import { NotificationManager } from "react-notifications";
 import useToken from "../../common/useToken";
 import { store } from "../../common/store";
 import { safeTrim } from "../../common/formatting";
+import { isError, handleError } from "../../common/errorHandling";
 
 import "milligram";
 
@@ -20,6 +21,13 @@ function NewAccount() {
   const { token } = useToken();
   const userAccountId = store.get("userAccountId");
 
+  const dealWithIt = (error) => {
+    const { mustLogout } = handleError("Account creation failed:", error);
+    if (mustLogout) {
+      navigate("/logout");
+    }
+  };
+
   // handlers
 
   const handleSubmit = async (e) => {
@@ -32,9 +40,8 @@ function NewAccount() {
         type: safeTrim(type.trim()),
       });
 
-      if (response?.errorCode) {
-        const { errorMessage } = response;
-        NotificationManager.error(errorMessage, null, 4000);
+      if (isError(response)) {
+        dealWithIt(response);
       } else {
         const { bankingAccountId } = response;
         store.set("bankingAccountId", bankingAccountId);
@@ -42,12 +49,7 @@ function NewAccount() {
         navigate("/");
       }
     } catch (error) {
-      console.error(error.message);
-      NotificationManager.error(
-        `Account creation failed: ${error.message}`,
-        null,
-        4000
-      );
+      dealWithIt(error);
     }
   };
 

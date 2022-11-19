@@ -14,7 +14,6 @@ export const createNewAccount = async (data) => {
   const errors = validateData(data, rules);
   if (errors) {
     return {
-      errorCode: "invalid-params",
       errorMessage: `Missing or invalid information: ${errors}`,
     };
   }

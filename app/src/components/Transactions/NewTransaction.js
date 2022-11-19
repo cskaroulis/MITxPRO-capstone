@@ -6,6 +6,7 @@ import useToken from "../../common/useToken";
 import { store } from "../../common/store";
 import { createNewTransaction } from "./functions/createNewTransaction";
 import { Breadcrumb, BreadcrumbItem } from "../../common/breadcrumbs";
+import { isError, handleError } from "../../common/errorHandling";
 
 import "milligram";
 
@@ -24,6 +25,13 @@ function NewTransaction() {
     NotificationManager.warning("Please select a transaction type.");
   }
 
+  const dealWithIt = (error) => {
+    const { mustLogout } = handleError("Transaction failed: ", error);
+    if (mustLogout) {
+      navigate("/logout");
+    }
+  };
+
   // handlers
 
   const handleSubmit = async (e) => {
@@ -37,18 +45,21 @@ function NewTransaction() {
         amount: amount.trim(),
       });
 
-      if (response?.errorMessage) {
-        const { errorMessage } = response;
-        NotificationManager.error(`${errorMessage}`, "Error!");
+      if (isError(response)) {
+        dealWithIt(response);
       } else {
         const typeTitle = type === "withdrawal" ? "Withdrawal" : "Deposit";
         NotificationManager.success(`${typeTitle} was successful.`, null, 2000);
+        navigate("/transactions");
       }
     } catch (error) {
-      console.error(error.message);
-      NotificationManager.error("Transaction failed.", "Error!");
+      const { mustLogout } = handleError("Transaction failed: ", error);
+      if (mustLogout) {
+        navigate("/logout");
+      } else {
+        navigate("/transactions");
+      }
     }
-    navigate("/transactions");
   };
 
   return (

@@ -1,11 +1,11 @@
 import { useEffect, useState, useRef } from "react";
-import { Link } from "react-router-dom";
-import { NotificationManager } from "react-notifications";
+import { Link, useNavigate } from "react-router-dom";
 
 import useToken from "../../common/useToken";
 import { store } from "../../common/store";
 import { alignCenter, alignRight } from "../../common/styling";
 import { formatCurrency } from "../../common/formatting";
+import { isError, handleError } from "../../common/errorHandling";
 
 import { getAccounts } from "./functions/getAccounts";
 
@@ -16,9 +16,21 @@ import { Breadcrumb, BreadcrumbItem } from "../../common/breadcrumbs";
 const Accounts = () => {
   const [accounts, setAccounts] = useState([]);
 
+  const navigate = useNavigate();
+
   const { token } = useToken();
   const userAccountId = useRef(null);
   const firstName = useRef(null);
+
+  const dealWithIt = (error) => {
+    const { mustLogout } = handleError(
+      "Failed to retrieve your accounts:",
+      error
+    );
+    if (mustLogout) {
+      navigate("/logout");
+    }
+  };
 
   // get data
   useEffect(
@@ -26,20 +38,26 @@ const Accounts = () => {
       let mounted = true;
       userAccountId.current = store.get("userAccountId");
       firstName.current = store.get("firstName");
-      getAccounts(userAccountId.current, token)
-        .then((response) => {
-          const { bankingAccounts } = response;
-          if (mounted) {
-            // TODO: This is a dangerous approach.
-            // What happens to the balance calculation when we add paginated result?
-            // Revisit.
-            setAccounts(bankingAccounts);
-          }
-        })
-        .catch((error) => {
-          const { errorCode, errorMessage } = error;
-          NotificationManager.error(`${errorMessage} (${errorCode})`, "Error!");
-        });
+      try {
+        getAccounts(userAccountId.current, token)
+          .then((response) => {
+            const { bankingAccounts } = response;
+            if (mounted) {
+              // TODO: This is a dangerous approach.
+              // What happens to the balance calculation when we add paginated result?
+              // Revisit.
+              setAccounts(bankingAccounts);
+            }
+            if (isError(response)) {
+              dealWithIt(response);
+            }
+          })
+          .catch((error) => {
+            dealWithIt(error);
+          });
+      } catch (error) {
+        dealWithIt(error);
+      }
       return () => (mounted = false);
     },
     // eslint-disable-next-line

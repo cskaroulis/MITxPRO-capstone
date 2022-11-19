@@ -1,21 +1,24 @@
 // Banking Account Data Access Layer
 const { db, collectionNames } = require("../datasources");
+const {
+  calculateBankingAccountBalance,
+} = require("../banking-transactions/data-access-layer");
 
 // methods
 
 const create = (data) => {
-  const { userAccountId, nickname, balance, type } = data;
+  const { userAccountId, nickname, type } = data;
   const result = data;
   console.info(data);
   return new Promise((resolve, reject) => {
     db.collection(collectionNames.bankingAccounts)
-      .add({ userAccountId, nickname, balance, type })
+      .add({ userAccountId, nickname, type })
       .then((docRef) => {
         result.bankingAccountId = docRef.id;
-        return resolve(result);
+        resolve(result);
       })
       .catch((error) => {
-        return reject(error);
+        reject(error);
       });
   });
 };
@@ -28,17 +31,16 @@ const getOne = (data) => {
       .get()
       .then((doc) => {
         if (doc.exists) {
-          return resolve([{ ...doc.data() }]);
+          resolve([{ ...doc.data() }]);
         } else {
-          return reject({
-            errorCode: "not found",
+          reject({
             errorMessage: "banking account not found",
           });
         }
       })
       .catch((error) => {
         console.error(error);
-        return reject(error);
+        reject(error);
       });
   });
 };
@@ -54,32 +56,43 @@ const getAll = (data) => {
         querySnapshot.forEach((doc) => {
           docs.push({ bankingAccountId: doc.id, ...doc.data() });
         });
-        return resolve({
+        return docs;
+      })
+      .then(async (docs) => {
+        for (const doc of docs) {
+          try {
+            const { balance } = await calculateBankingAccountBalance(
+              doc.bankingAccountId
+            );
+            doc.balance = balance;
+          } catch (error) {
+            reject(error);
+          }
+        }
+        resolve({
           bankingAccounts: docs,
         });
       })
       .catch((error) => {
         console.error(error);
-        return reject(error);
+        reject(error);
       });
   });
 };
 
 const update = (data) => {
-  const { bankingAccountId, balance } = data;
+  const { bankingAccountId, nickname } = data;
   return new Promise((resolve, reject) => {
     const docRef = db
       .collection(collectionNames.bankingAccounts)
       .doc(bankingAccountId);
     return docRef
-      .update({
-        balance,
-      })
+      .update({ nickname })
       .then(() => {
-        return resolve("bank account updated");
+        resolve("bank account updated");
       })
       .catch((error) => {
-        return reject(error);
+        reject(error);
       });
   });
 };
@@ -93,12 +106,18 @@ const discard = (data) => {
     return docRef
       .delete()
       .then(() => {
-        return resolve("bank account updated");
+        resolve("bank account updated");
       })
       .catch((error) => {
-        return reject(error);
+        reject(error);
       });
   });
 };
 
-module.exports = { create, getOne, getAll, update, discard };
+module.exports = {
+  create,
+  getOne,
+  getAll,
+  update,
+  discard,
+};

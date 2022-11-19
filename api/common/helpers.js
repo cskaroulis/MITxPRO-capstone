@@ -6,7 +6,6 @@ function generateAccessToken(email) {
 
 const createErrorResponse = (error) => {
   return {
-    errorCode: error.code,
     errorMessage: error.message,
   };
 };

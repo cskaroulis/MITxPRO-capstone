@@ -4,8 +4,8 @@ import { NotificationManager } from "react-notifications";
 
 import "milligram";
 
-// import { AppContext } from "../../common/context";
 import { signupUser } from "./functions/signupUser";
+import { isError, handleError } from "../../common/errorHandling";
 
 const Signup = () => {
   const [email, setEmail] = useState();
@@ -16,6 +16,10 @@ const Signup = () => {
 
   // const contextMgr = useContext(AppContext);
   const navigate = useNavigate();
+
+  const dealWithIt = (error) => {
+    handleError("Failed to signup:", error);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,15 +32,13 @@ const Signup = () => {
         lastName: lastName.trim(),
         phoneNumber: phoneNumber.trim(),
       });
-      if (response?.errorCode) {
-        const { errorCode, errorMessage } = response;
-        NotificationManager.error(`${errorMessage} (${errorCode})`, "Error!");
+      if (isError(response)) {
+        dealWithIt(response);
       } else {
         NotificationManager.success("Welcome aboard!", null, 2000);
       }
     } catch (error) {
-      console.error(error.message);
-      NotificationManager.error("Login failed.", "Error!");
+      dealWithIt(error);
     }
 
     navigate("/login");

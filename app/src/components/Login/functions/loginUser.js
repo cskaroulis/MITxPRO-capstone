@@ -1,7 +1,6 @@
 export const loginUser = async (credentials) => {
   if (!credentials) {
     return Promise.reject({
-      errorCode: "invalid-params",
       errorMessage: "Missing credentials",
     });
   }

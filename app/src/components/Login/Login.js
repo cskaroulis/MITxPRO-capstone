@@ -5,6 +5,7 @@ import { NotificationManager } from "react-notifications";
 
 import { store } from "../../common/store";
 import { loginUser } from "./functions/loginUser";
+import { isError, handleError } from "../../common/errorHandling";
 
 import "milligram";
 
@@ -13,6 +14,10 @@ const Login = ({ setToken }) => {
   const [password, setPassword] = useState();
 
   const navigate = useNavigate();
+
+  const dealWithIt = (error) => {
+    handleError("Failed to login:", error);
+  };
 
   // handlers
 
@@ -24,9 +29,8 @@ const Login = ({ setToken }) => {
         password: password.trim(),
       });
 
-      if (response?.errorCode) {
-        const { errorCode, errorMessage } = response;
-        NotificationManager.error(`${errorMessage} (${errorCode})`, "Error!");
+      if (isError(response)) {
+        dealWithIt(response);
       } else {
         NotificationManager.success("Welcome back!", null, 2000);
 
@@ -42,12 +46,11 @@ const Login = ({ setToken }) => {
           store.set("email", email);
           store.set("userAccountId", userAccountId);
         }
+        navigate("/");
       }
     } catch (error) {
-      console.error(error.message);
-      NotificationManager.error("Login failed.", "Error!");
+      dealWithIt(error);
     }
-    navigate("/");
   };
 
   return (

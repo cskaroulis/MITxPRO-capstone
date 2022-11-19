@@ -7,14 +7,17 @@ const { createErrorResponse } = require("../../common/helpers");
 
 router.post("/", authenticateToken, function (req, res) {
   const { userAccountId, bankingAccountId, type, amount } = req.body;
+  // create({ userAccountId, bankingAccountId, type, amount })
+  //   .then((data) => res.status(201).json(data))
+  //   .catch((err) => next(err));
+
   create({ userAccountId, bankingAccountId, type, amount })
     .then((transaction) => {
       res.status(201).json(transaction);
     })
     .catch((error) => {
       console.error(error);
-      const result = createErrorResponse(error);
-      res.status(401).json(result);
+      res.status(500).json(error);
     });
 });
 

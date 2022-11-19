@@ -1,90 +1,99 @@
-import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { NotificationManager } from "react-notifications";
+import React, { useEffect, useState, useRef } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { Breadcrumb, BreadcrumbItem } from "../../common/breadcrumbs";
 import useToken from "../../common/useToken";
 import { store } from "../../common/store";
 import { alignCenter, alignRight } from "../../common/styling";
 import { formatCurrency } from "../../common/formatting";
+import { isError, handleError } from "../../common/errorHandling";
 import { getTransactions } from "./functions/getTransactions";
 
 import "milligram";
 
 function Transactions() {
-  const [nickname, setNickname] = useState();
+  const [totalBalance, setTotalBalance] = useState(0);
   const [transactions, setTransactions] = useState([]);
+  const bankingAccountId = useRef();
+  const nickname = useRef();
 
   const { token } = useToken();
   const location = useLocation();
+  const navigate = useNavigate();
 
-  const getId = () => {
-    const id = !!location?.state?.bankingAccountId
-      ? location.state.bankingAccountId
-      : store.get("bankingAccountId");
-    if (!id) {
-      const msg = "Banking account id not found";
-      console.error(msg);
-      NotificationManager.error(msg, "Error!");
+  const dealWithIt = (error) => {
+    const { mustLogout } = handleError(
+      "Failed to retrieve your transactions:",
+      error
+    );
+    if (mustLogout) {
+      navigate("/logout");
     }
-    return id;
-  };
-
-  const getNickname = () => {
-    const nickname = !!location?.state?.nickname
-      ? location.state.nickname
-      : store.get("nickname");
-    if (!nickname) {
-      const msg = "Nickname not found";
-      console.error(msg);
-    }
-    return nickname;
-  };
-
-  const calculateBalance = () => {
-    let balance = 0;
-    transactions.map((transaction) => {
-      if (transaction.type === "deposit") {
-        balance += parseFloat(transaction.amount);
-      } else {
-        balance -= parseFloat(transaction.amount);
-      }
-      return balance;
-    });
-    return balance;
   };
 
   useEffect(
     () => {
       let mounted = true;
-      // id
-      const id = getId();
-      if (id) {
-        store.set("bankingAccountId", id);
-      }
-      // nickname
-      const nickname = getNickname();
-      if (nickname) {
-        setNickname(nickname);
-        store.set("nickname", nickname);
-      }
-      // get data
-      getTransactions(id, token).then((response) => {
-        const { bankingTransactions } = response;
-        if (mounted) {
-          setTransactions(bankingTransactions);
+
+      if (mounted) {
+        if (!!location?.state) {
+          bankingAccountId.current = location?.state?.bankingAccountId;
+          store.set("bankingAccountId", bankingAccountId.current);
+
+          nickname.current = location?.state?.nickname;
+          store.set("nickname", nickname.current);
+        } else {
+          bankingAccountId.current = store.get("bankingAccountId");
+          nickname.current = store.get("nickname");
         }
-      });
+        if (!bankingAccountId) {
+          const errorMessage = "Banking account id not found";
+          dealWithIt({ errorMessage });
+        }
+        if (!nickname) {
+          const errorMessage = "Nickname not found";
+          dealWithIt({ errorMessage });
+        }
+      }
       return () => (mounted = false);
     },
     // eslint-disable-next-line
-    [token]
+    []
+  );
+
+  useEffect(
+    () => {
+      let mounted = true;
+      try {
+        // get data
+        getTransactions(bankingAccountId.current, token)
+          .then((response) => {
+            if (isError(response)) {
+              dealWithIt(response);
+            } else {
+              const { balance, bankingTransactions } = response;
+              if (mounted) {
+                setTotalBalance(balance);
+                setTransactions(bankingTransactions);
+              }
+            }
+          })
+          .catch((error) => {
+            dealWithIt(error);
+          });
+      } catch (error) {
+        dealWithIt(error);
+      }
+      return () => (mounted = false);
+    },
+    // eslint-disable-next-line
+    [bankingAccountId, token]
   );
 
   return (
     <section className="container" id="transactions">
       <h1>
-        <span className="highlight">{nickname}</span> transactions
+        <span className="highlight">{nickname.current}</span> transactions
       </h1>
       <Breadcrumb>
         <BreadcrumbItem to="/">Return Home</BreadcrumbItem>
@@ -97,9 +106,7 @@ function Transactions() {
       </Breadcrumb>
       <div className="balance-container">
         Current balance: &nbsp;
-        <span className="balance-amount">
-          {formatCurrency(calculateBalance())}
-        </span>
+        <span className="balance-amount">{formatCurrency(totalBalance)}</span>
       </div>
       <table>
         <thead>

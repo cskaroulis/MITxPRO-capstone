@@ -1,7 +1,6 @@
 export const signupUser = async (data) => {
   if (!data) {
     return Promise.reject({
-      errorCode: "invalid-params",
       errorMessage: "Missing data",
     });
   }

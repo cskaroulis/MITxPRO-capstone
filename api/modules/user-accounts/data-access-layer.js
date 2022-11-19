@@ -23,10 +23,10 @@ const create = (data) => {
       })
       .then((docRef) => {
         result.userAccountId = docRef.id;
-        return resolve(result);
+        resolve(result);
       })
       .catch((error) => {
-        return reject(error);
+        reject(error);
       });
   });
 };
@@ -39,17 +39,16 @@ const getOne = (data) => {
       .get()
       .then((doc) => {
         if (doc.exists) {
-          return resolve([{ ...doc.data() }]);
+          resolve([{ ...doc.data() }]);
         } else {
-          return reject({
-            errorCode: "not found",
+          reject({
             errorMessage: "user account not found",
           });
         }
       })
       .catch((error) => {
         console.error(error);
-        return reject(error);
+        reject(error);
       });
   });
 };
@@ -67,10 +66,10 @@ const update = (data) => {
         phoneNumber,
       })
       .then(() => {
-        return resolve("user account updated");
+        resolve("user account updated");
       })
       .catch((error) => {
-        return reject(error);
+        reject(error);
       });
   });
 };
@@ -84,10 +83,10 @@ const discard = (data) => {
     return docRef
       .delete()
       .then(() => {
-        return resolve("user account updated");
+        resolve("user account updated");
       })
       .catch((error) => {
-        return reject(error);
+        reject(error);
       });
   });
 };

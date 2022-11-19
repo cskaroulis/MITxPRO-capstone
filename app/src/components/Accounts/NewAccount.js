@@ -4,6 +4,8 @@ import { NotificationManager } from "react-notifications";
 
 import useToken from "../../common/useToken";
 import { store } from "../../common/store";
+import { safeTrim } from "../../common/formatting";
+import { isError, handleError } from "../../common/errorHandling";
 
 import "milligram";
 
@@ -12,13 +14,19 @@ import { Breadcrumb, BreadcrumbItem } from "../../common/breadcrumbs";
 
 function NewAccount() {
   const [nickname, setNickname] = useState();
-  const [balance, setBalance] = useState(0);
   const [type, setType] = useState("checking");
 
   const navigate = useNavigate();
 
   const { token } = useToken();
   const userAccountId = store.get("userAccountId");
+
+  const dealWithIt = (error) => {
+    const { mustLogout } = handleError("Account creation failed:", error);
+    if (mustLogout) {
+      navigate("/logout");
+    }
+  };
 
   // handlers
 
@@ -28,22 +36,21 @@ function NewAccount() {
       const response = await createNewAccount({
         userAccountId,
         token,
-        nickname: nickname.trim(),
-        balance: balance.trim(),
-        type: type.trim(),
+        nickname: safeTrim(nickname),
+        type: safeTrim(type.trim()),
       });
 
-      if (response?.errorCode) {
-        const { errorCode, errorMessage } = response;
-        NotificationManager.error(`${errorMessage} (${errorCode})`, "Error!");
+      if (isError(response)) {
+        dealWithIt(response);
       } else {
+        const { bankingAccountId } = response;
+        store.set("bankingAccountId", bankingAccountId);
         NotificationManager.success("Account created. Well done!", null, 2000);
+        navigate("/");
       }
     } catch (error) {
-      console.error(error.message);
-      NotificationManager.error("Account creation failed.", "Error!");
+      dealWithIt(error);
     }
-    navigate("/");
   };
 
   return (
@@ -67,10 +74,6 @@ function NewAccount() {
         <label>
           <p>Account nickname</p>
           <input type="text" onChange={(e) => setNickname(e.target.value)} />
-        </label>
-        <label>
-          <p>Starting balance</p>
-          <input type="number" onChange={(e) => setBalance(e.target.value)} />
         </label>
         <div>
           <button type="submit">Submit</button>

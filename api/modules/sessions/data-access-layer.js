@@ -20,13 +20,13 @@ const create = (data) => {
         querySnapshot.forEach((doc) => {
           docs.push({ userAccountId: doc.id, ...doc.data(), email });
         });
-        return resolve({
+        resolve({
           userAccounts: docs,
         });
       })
       .catch((error) => {
         console.error(error);
-        return reject(error);
+        reject(error);
       });
   });
 };
@@ -37,10 +37,10 @@ const discard = () => {
       .auth()
       .signOut()
       .then(() => {
-        return resolve();
+        resolve();
       })
       .catch((error) => {
-        return reject(error);
+        reject(error);
       });
   });
 };

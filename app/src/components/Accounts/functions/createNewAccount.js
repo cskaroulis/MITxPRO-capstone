@@ -1,17 +1,24 @@
+import { validateData } from "../../../common/validation";
+
 export const createNewAccount = async (data) => {
-  const { userAccountId, token } = data;
-  if (!userAccountId) {
-    return Promise.reject({
-      errorCode: "invalid-params",
-      errorMessage: "Missing userAccountId",
-    });
+  const { token } = data;
+
+  // define validation rules
+  const rules = {
+    userAccountId: (value) => value && value.length,
+    token: (value) => value && value.length,
+    nickname: (value) => value && value.length,
+    type: (value) => value && value.length,
+  };
+  // execute validation rules
+  const errors = validateData(data, rules);
+  if (errors) {
+    return {
+      errorMessage: `Missing or invalid information: ${errors}`,
+    };
   }
-  if (!token) {
-    return Promise.reject({
-      errorCode: "invalid-params",
-      errorMessage: "Missing token",
-    });
-  }
+
+  // all clear. let's grab some data
   const endpoint = process.env.REACT_APP_API_ENDPOINT;
   return fetch(endpoint + "banking-accounts", {
     method: "POST",

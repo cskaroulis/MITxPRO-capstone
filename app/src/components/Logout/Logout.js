@@ -1,13 +1,19 @@
 import { useEffect } from "react";
 import PropTypes from "prop-types";
-import { NotificationManager } from "react-notifications";
+import { useNavigate } from "react-router-dom";
 
 import useToken from "../../common/useToken";
 import { store } from "../../common/store";
 import { logoutUser } from "./functions/logoutUser";
+import { handleError } from "../../common/errorHandling";
 
 const Logout = ({ removeToken }) => {
   const { token } = useToken();
+  const navigate = useNavigate();
+
+  const dealWithIt = (error) => {
+    handleError("Failed to logout:", error);
+  };
 
   useEffect(
     () => {
@@ -17,15 +23,14 @@ const Logout = ({ removeToken }) => {
         try {
           await logoutUser(token);
         } catch (error) {
-          const { errorCode, errorMessage } = error;
-          NotificationManager.error(`${errorMessage} (${errorCode})`, "Error!");
+          dealWithIt(error);
         }
       };
 
       cleanUp(token);
       removeToken();
       store.clear();
-      window.location.pathname = "/mitxpro-capstone/";
+      navigate("/login");
     },
     // eslint-disable-next-line
     []

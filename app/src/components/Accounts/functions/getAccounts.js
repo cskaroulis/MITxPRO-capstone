@@ -1,13 +1,11 @@
 export const getAccounts = (userAccountId, token) => {
   if (!token) {
     return Promise.reject({
-      errorCode: "invalid-params",
       errorMessage: "Missing token",
     });
   }
   if (!userAccountId) {
     return Promise.reject({
-      errorCode: "invalid-params",
       errorMessage: "Missing userAccountId",
     });
   }

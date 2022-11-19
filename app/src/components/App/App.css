@@ -704,7 +704,8 @@ form p {
   margin-bottom: 0
 }
 
-.container input {
+.container input,
+.container select {
   color: dimgrey;
   font-size: 1.8rem;
   height: 5.8rem;
@@ -737,4 +738,3 @@ span.highlight {
 #transactions table {
   margin-top: 0;
 }
-

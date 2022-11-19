@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { NotificationManager } from "react-notifications";
 
@@ -17,17 +17,22 @@ const Accounts = () => {
   const [accounts, setAccounts] = useState([]);
 
   const { token } = useToken();
-  const userAccountId = store.get("userAccountId");
-  const firstName = store.get("firstName");
+  const userAccountId = useRef(null);
+  const firstName = useRef(null);
 
   // get data
   useEffect(
     () => {
       let mounted = true;
-      getAccounts(userAccountId, token)
+      userAccountId.current = store.get("userAccountId");
+      firstName.current = store.get("firstName");
+      getAccounts(userAccountId.current, token)
         .then((response) => {
           const { bankingAccounts } = response;
           if (mounted) {
+            // TODO: This is a dangerous approach.
+            // What happens to the balance calculation when we add paginated result?
+            // Revisit.
             setAccounts(bankingAccounts);
           }
         })
@@ -45,7 +50,8 @@ const Accounts = () => {
     <>
       <section className="container" id="accounts">
         <h1>
-          Here are your accounts <span className="highlight">{firstName}</span>.
+          Here are your accounts{" "}
+          <span className="highlight">{firstName.current}</span>.
         </h1>
         <Breadcrumb>
           <BreadcrumbItem to="/new-account">New Account</BreadcrumbItem>
@@ -74,7 +80,9 @@ const Accounts = () => {
                     </Link>
                   </td>
                   <td style={alignCenter}>{account.type}</td>
-                  <td style={alignRight}>{formatCurrency(account.balance)}</td>
+                  <td style={alignRight}>
+                    {formatCurrency(account.balance ? account.balance : 0)}
+                  </td>
                 </tr>
               ))
             ) : (

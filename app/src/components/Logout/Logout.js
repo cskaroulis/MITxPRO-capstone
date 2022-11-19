@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 import { NotificationManager } from "react-notifications";
 
 import useToken from "../../common/useToken";
@@ -8,6 +9,7 @@ import { logoutUser } from "./functions/logoutUser";
 
 const Logout = ({ removeToken }) => {
   const { token } = useToken();
+  const navigate = useNavigate();
 
   useEffect(
     () => {
@@ -25,7 +27,8 @@ const Logout = ({ removeToken }) => {
       cleanUp(token);
       removeToken();
       store.clear();
-      window.location.pathname = "/mitxpro-capstone/";
+      navigate("/login");
+      // window.location.pathname = "/mitxpro-capstone/";
     },
     // eslint-disable-next-line
     []

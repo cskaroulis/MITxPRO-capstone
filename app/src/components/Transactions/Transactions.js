@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { NotificationManager } from "react-notifications";
 
@@ -12,79 +12,66 @@ import { getTransactions } from "./functions/getTransactions";
 import "milligram";
 
 function Transactions() {
-  const [nickname, setNickname] = useState();
+  const [totalBalance, setTotalBalance] = useState(0);
   const [transactions, setTransactions] = useState([]);
+  const bankingAccountId = useRef();
+  const nickname = useRef();
 
   const { token } = useToken();
   const location = useLocation();
 
-  const getId = () => {
-    const id = !!location?.state?.bankingAccountId
-      ? location.state.bankingAccountId
-      : store.get("bankingAccountId");
-    if (!id) {
-      const msg = "Banking account id not found";
-      console.error(msg);
-      NotificationManager.error(msg, "Error!");
-    }
-    return id;
-  };
+  useEffect(
+    () => {
+      let mounted = true;
 
-  const getNickname = () => {
-    const nickname = !!location?.state?.nickname
-      ? location.state.nickname
-      : store.get("nickname");
-    if (!nickname) {
-      const msg = "Nickname not found";
-      console.error(msg);
-    }
-    return nickname;
-  };
+      if (mounted) {
+        if (!!location?.state) {
+          bankingAccountId.current = location?.state?.bankingAccountId;
+          store.set("bankingAccountId", bankingAccountId.current);
 
-  const calculateBalance = () => {
-    let balance = 0;
-    transactions.map((transaction) => {
-      if (transaction.type === "deposit") {
-        balance += parseFloat(transaction.amount);
-      } else {
-        balance -= parseFloat(transaction.amount);
+          nickname.current = location?.state?.nickname;
+          store.set("nickname", nickname.current);
+        } else {
+          bankingAccountId.current = store.get("bankingAccountId");
+          nickname.current = store.get("nickname");
+        }
+        if (!bankingAccountId) {
+          const msg = "Banking account id not found";
+          console.error(msg);
+          NotificationManager.error(msg, "Error!");
+        }
+        if (!nickname) {
+          const msg = "Nickname not found";
+          console.error(msg);
+        }
       }
-      return balance;
-    });
-    return balance;
-  };
+      return () => (mounted = false);
+    },
+    // eslint-disable-next-line
+    []
+  );
 
   useEffect(
     () => {
       let mounted = true;
-      // id
-      const id = getId();
-      if (id) {
-        store.set("bankingAccountId", id);
-      }
-      // nickname
-      const nickname = getNickname();
-      if (nickname) {
-        setNickname(nickname);
-        store.set("nickname", nickname);
-      }
       // get data
-      getTransactions(id, token).then((response) => {
-        const { bankingTransactions } = response;
+      getTransactions(bankingAccountId.current, token).then((response) => {
+        const { balance, bankingTransactions } = response;
         if (mounted) {
+          setTotalBalance(balance);
           setTransactions(bankingTransactions);
         }
       });
       return () => (mounted = false);
     },
     // eslint-disable-next-line
-    [token]
+    [bankingAccountId, token]
   );
 
   return (
     <section className="container" id="transactions">
       <h1>
-        <span className="highlight">{nickname}</span> transactions
+        <span className="highlight">{nickname.current}</span> transactions
       </h1>
       <Breadcrumb>
         <BreadcrumbItem to="/">Return Home</BreadcrumbItem>
@@ -97,9 +84,7 @@ function Transactions() {
       </Breadcrumb>
       <div className="balance-container">
         Current balance: &nbsp;
-        <span className="balance-amount">
-          {formatCurrency(calculateBalance())}
-        </span>
+        <span className="balance-amount">{formatCurrency(totalBalance)}</span>
       </div>
       <table>
         <thead>

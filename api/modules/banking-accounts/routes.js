@@ -11,8 +11,8 @@ const {
 const { createErrorResponse } = require("../../common/helpers");
 
 router.post("/", authenticateToken, function (req, res) {
-  const { userAccountId, nickname, balance = 0, type = "checking" } = req.body;
-  create({ userAccountId, nickname, balance, type })
+  const { userAccountId, nickname, type = "checking" } = req.body;
+  create({ userAccountId, nickname, type })
     .then((account) => {
       res.status(201).json(account);
     })
@@ -38,7 +38,7 @@ router.get("/", authenticateToken, function (req, res) {
         res.status(401).json(result);
       });
   } else {
-    // get a specific transaction
+    // get a specific account
     getOne({ bankingAccountId })
       .then((account) => {
         res.status(200).json(account);

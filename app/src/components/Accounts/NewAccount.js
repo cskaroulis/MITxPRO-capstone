@@ -4,6 +4,7 @@ import { NotificationManager } from "react-notifications";
 
 import useToken from "../../common/useToken";
 import { store } from "../../common/store";
+import { safeTrim } from "../../common/formatting";
 
 import "milligram";
 
@@ -12,7 +13,6 @@ import { Breadcrumb, BreadcrumbItem } from "../../common/breadcrumbs";
 
 function NewAccount() {
   const [nickname, setNickname] = useState();
-  const [balance, setBalance] = useState(0);
   const [type, setType] = useState("checking");
 
   const navigate = useNavigate();
@@ -28,22 +28,27 @@ function NewAccount() {
       const response = await createNewAccount({
         userAccountId,
         token,
-        nickname: nickname.trim(),
-        balance: balance.trim(),
-        type: type.trim(),
+        nickname: safeTrim(nickname),
+        type: safeTrim(type.trim()),
       });
 
       if (response?.errorCode) {
-        const { errorCode, errorMessage } = response;
-        NotificationManager.error(`${errorMessage} (${errorCode})`, "Error!");
+        const { errorMessage } = response;
+        NotificationManager.error(errorMessage, null, 4000);
       } else {
+        const { bankingAccountId } = response;
+        store.set("bankingAccountId", bankingAccountId);
         NotificationManager.success("Account created. Well done!", null, 2000);
+        navigate("/");
       }
     } catch (error) {
       console.error(error.message);
-      NotificationManager.error("Account creation failed.", "Error!");
+      NotificationManager.error(
+        `Account creation failed: ${error.message}`,
+        null,
+        4000
+      );
     }
-    navigate("/");
   };
 
   return (
@@ -67,10 +72,6 @@ function NewAccount() {
         <label>
           <p>Account nickname</p>
           <input type="text" onChange={(e) => setNickname(e.target.value)} />
-        </label>
-        <label>
-          <p>Starting balance</p>
-          <input type="number" onChange={(e) => setBalance(e.target.value)} />
         </label>
         <div>
           <button type="submit">Submit</button>

@@ -37,9 +37,9 @@ function NewTransaction() {
         amount: amount.trim(),
       });
 
-      if (response?.errorCode) {
-        const { errorCode, errorMessage } = response;
-        NotificationManager.error(`${errorMessage} (${errorCode})`, "Error!");
+      if (response?.errorMessage) {
+        const { errorMessage } = response;
+        NotificationManager.error(`${errorMessage}`, "Error!");
       } else {
         const typeTitle = type === "withdrawal" ? "Withdrawal" : "Deposit";
         NotificationManager.success(`${typeTitle} was successful.`, null, 2000);

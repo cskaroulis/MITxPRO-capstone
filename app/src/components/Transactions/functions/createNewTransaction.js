@@ -29,6 +29,9 @@ export const createNewTransaction = async (data) => {
       errorCode: "invalid-params",
       errorMessage: "Missing transaction amount",
     });
+  } else {
+    // make sure we are saving a numeric value
+    data.amount = parseFloat(amount);
   }
   const endpoint = process.env.REACT_APP_API_ENDPOINT;
   return fetch(endpoint + "banking-transactions", {

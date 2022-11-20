@@ -17,3 +17,4 @@ api/.env
 # misc
 .DS_Store
 .notes.txt
+.vscode

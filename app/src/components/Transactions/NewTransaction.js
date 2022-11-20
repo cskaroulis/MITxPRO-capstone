@@ -7,6 +7,7 @@ import { store } from "../../common/store";
 import { createNewTransaction } from "./functions/createNewTransaction";
 import { Breadcrumb, BreadcrumbItem } from "../../common/breadcrumbs";
 import { isError, handleError } from "../../common/errorHandling";
+import { safeTrim } from "../../common/formatting";
 
 import "milligram";
 
@@ -42,11 +43,14 @@ function NewTransaction() {
         bankingAccountId,
         token,
         type,
-        amount: amount.trim(),
+        amount: safeTrim(amount),
       });
 
       if (isError(response)) {
         dealWithIt(response);
+        if (response.errorMessage === "Insufficient funds.") {
+          navigate("/transactions");
+        }
       } else {
         const typeTitle = type === "withdrawal" ? "Withdrawal" : "Deposit";
         NotificationManager.success(`${typeTitle} was successful.`, null, 2000);

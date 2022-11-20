@@ -4,24 +4,21 @@ const { db, collectionNames } = require("../datasources");
 
 // methods
 
-const create = (data) => {
-  const { userAccountId, bankingAccountId, type, amount } = data;
+const create = async (data) => {
+  const { userAccountId, bankingAccountId, type, amount, created } = data;
   const result = data;
 
-  return new Promise(function (resolve, reject) {
-    // ensure we have sufficient funds for withdrawals
-    if (type === "withdrawal") {
-      calculateBankingAccountBalance(bankingAccountId).then(({ balance }) => {
-        if (balance < amount) {
-          reject({
-            errorMessage: "Insufficient funds. Please deposit more money.",
-          });
-        }
-      });
+  // ensure we have sufficient funds for withdrawals
+  if (type === "withdrawal") {
+    const { balance } = await calculateBankingAccountBalance(bankingAccountId);
+    if (balance < amount) {
+      return Promise.reject({ errorMessage: "Insufficient funds." });
     }
+  }
 
+  return new Promise(function (resolve, reject) {
     db.collection(collectionNames.bankingTransactions)
-      .add({ userAccountId, bankingAccountId, type, amount })
+      .add({ userAccountId, bankingAccountId, type, amount, created })
       .then((docRef) => {
         result.transactionId = docRef.id;
         resolve(result);
@@ -59,6 +56,7 @@ const getAll = (data) => {
   return new Promise((resolve, reject) => {
     db.collection(collectionNames.bankingTransactions)
       .where("bankingAccountId", "==", bankingAccountId)
+      .orderBy("created", "desc")
       .get()
       .then((querySnapshot) => {
         const docs = [];

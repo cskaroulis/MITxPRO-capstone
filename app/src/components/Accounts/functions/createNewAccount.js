@@ -18,8 +18,9 @@ export const createNewAccount = async (data) => {
     };
   }
 
-  // all clear. let's grab some data
+  // all clear. let's save the data
   const endpoint = process.env.REACT_APP_API_ENDPOINT;
+  data.created = new Date().toISOString();
   return fetch(endpoint + "banking-accounts", {
     method: "POST",
     headers: {

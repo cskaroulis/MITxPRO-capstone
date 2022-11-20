@@ -11,8 +11,8 @@ const {
 const { createErrorResponse } = require("../../common/helpers");
 
 router.post("/", authenticateToken, function (req, res) {
-  const { userAccountId, nickname, type = "checking" } = req.body;
-  create({ userAccountId, nickname, type })
+  const { userAccountId, nickname, type = "checking", created } = req.body;
+  create({ userAccountId, nickname, type, created })
     .then((account) => {
       res.status(201).json(account);
     })

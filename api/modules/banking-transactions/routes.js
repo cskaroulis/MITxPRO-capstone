@@ -6,12 +6,8 @@ const { create, getOne, getAll } = require("./data-access-layer");
 const { createErrorResponse } = require("../../common/helpers");
 
 router.post("/", authenticateToken, function (req, res) {
-  const { userAccountId, bankingAccountId, type, amount } = req.body;
-  // create({ userAccountId, bankingAccountId, type, amount })
-  //   .then((data) => res.status(201).json(data))
-  //   .catch((err) => next(err));
-
-  create({ userAccountId, bankingAccountId, type, amount })
+  const { userAccountId, bankingAccountId, type, amount, created } = req.body;
+  create({ userAccountId, bankingAccountId, type, amount, created })
     .then((transaction) => {
       res.status(201).json(transaction);
     })

@@ -37,7 +37,7 @@ function NewAccount() {
         userAccountId,
         token,
         nickname: safeTrim(nickname),
-        type: safeTrim(type.trim()),
+        type: safeTrim(type),
       });
 
       if (isError(response)) {

@@ -1,34 +1,27 @@
+import { validateData } from "../../../common/validation";
+
 export const createNewTransaction = async (data) => {
-  const { userAccountId, bankingAccountId, token, type, amount } = data;
-  if (!userAccountId) {
-    return Promise.reject({
-      errorMessage: "Missing userAccountId",
-    });
+  const { token, amount } = data;
+
+  // define validation rules
+  const rules = {
+    userAccountId: (value) => value && value.length,
+    bankingAccountId: (value) => value && value.length,
+    token: (value) => value && value.length,
+    type: (value) => value && value.length,
+    amount: (value) => value && value.length && parseFloat(amount) > 0,
+  };
+  // execute validation rules
+  const errors = validateData(data, rules);
+  if (errors) {
+    return {
+      errorMessage: `Missing or invalid information: ${errors}`,
+    };
   }
-  if (!bankingAccountId) {
-    return Promise.reject({
-      errorMessage: "Missing userAccountId",
-    });
-  }
-  if (!token) {
-    return Promise.reject({
-      errorMessage: "Missing token",
-    });
-  }
-  if (!type) {
-    return Promise.reject({
-      errorMessage: "Missing transaction type",
-    });
-  }
-  if (!amount) {
-    return Promise.reject({
-      errorMessage: "Missing transaction amount",
-    });
-  } else {
-    // make sure we are saving a numeric value
-    data.amount = parseFloat(amount);
-  }
+
   const endpoint = process.env.REACT_APP_API_ENDPOINT;
+  data.amount = parseFloat(amount);
+  data.created = new Date().toISOString();
   return fetch(endpoint + "banking-transactions", {
     method: "POST",
     headers: {

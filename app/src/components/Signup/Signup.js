@@ -6,6 +6,7 @@ import "milligram";
 
 import { signupUser } from "./functions/signupUser";
 import { isError, handleError } from "../../common/errorHandling";
+import { safeTrim } from "../../common/formatting";
 
 const Signup = () => {
   const [email, setEmail] = useState();
@@ -26,11 +27,11 @@ const Signup = () => {
 
     try {
       const response = await signupUser({
-        email: email.trim(),
-        password: password.trim(),
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
-        phoneNumber: phoneNumber.trim(),
+        email: safeTrim(email),
+        password: safeTrim(password),
+        firstName: safeTrim(firstName),
+        lastName: safeTrim(lastName),
+        phoneNumber: safeTrim(phoneNumber),
       });
       if (isError(response)) {
         dealWithIt(response);

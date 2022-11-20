@@ -6,6 +6,7 @@ import { NotificationManager } from "react-notifications";
 import { store } from "../../common/store";
 import { loginUser } from "./functions/loginUser";
 import { isError, handleError } from "../../common/errorHandling";
+import { safeTrim } from "../../common/formatting";
 
 import "milligram";
 
@@ -25,8 +26,8 @@ const Login = ({ setToken }) => {
     e.preventDefault();
     try {
       const response = await loginUser({
-        email: email.trim(),
-        password: password.trim(),
+        email: safeTrim(email),
+        password: safeTrim(password),
       });
 
       if (isError(response)) {

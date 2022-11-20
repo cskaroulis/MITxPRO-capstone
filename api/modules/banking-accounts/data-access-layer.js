@@ -7,12 +7,12 @@ const {
 // methods
 
 const create = (data) => {
-  const { userAccountId, nickname, type } = data;
+  const { userAccountId, nickname, type, created } = data;
   const result = data;
   console.info(data);
   return new Promise((resolve, reject) => {
     db.collection(collectionNames.bankingAccounts)
-      .add({ userAccountId, nickname, type })
+      .add({ userAccountId, nickname, type, created })
       .then((docRef) => {
         result.bankingAccountId = docRef.id;
         resolve(result);

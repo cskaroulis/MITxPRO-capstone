@@ -5,7 +5,7 @@ import { Breadcrumb, BreadcrumbItem } from "../../common/breadcrumbs";
 import useToken from "../../common/useToken";
 import { store } from "../../common/store";
 import { alignCenter, alignRight } from "../../common/styling";
-import { formatCurrency } from "../../common/formatting";
+import { formatCurrency, formatDate } from "../../common/formatting";
 import { isError, handleError } from "../../common/errorHandling";
 import { getTransactions } from "./functions/getTransactions";
 
@@ -122,7 +122,7 @@ function Transactions() {
             transactions.map((transaction, ndx) => (
               <tr key={ndx}>
                 <td>{transaction.bankingTransactionId}</td>
-                <td style={alignCenter}>{transaction.date || "00/00/00"}</td>
+                <td style={alignCenter}>{formatDate(transaction.created)}</td>
                 <td style={alignCenter}>{transaction.type}</td>
                 <td style={alignRight}>{formatCurrency(transaction.amount)}</td>
               </tr>

@@ -10,7 +10,7 @@ const routes = {
   bankingTransactions: require("../modules/banking-transactions/routes"),
 };
 
-// use custom routes as middlware
+// use custom routes as middleware
 app.use("/sessions", routes.sessions);
 app.use("/user-accounts", routes.userAccounts);
 app.use("/banking-accounts", routes.bankingAccounts);

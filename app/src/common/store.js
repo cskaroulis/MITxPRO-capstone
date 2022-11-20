@@ -1,3 +1,6 @@
+// We have very simple state needs.
+// Storing state in local storage will persist state after browser reloads.
+
 const customizeKey = (key) => {
   return `capstone-bank-${key}`;
 };

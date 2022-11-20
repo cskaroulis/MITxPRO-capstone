@@ -11,7 +11,6 @@ router.post("/", function (req, res) {
   const { email, password } = req.body;
   create({ email, password })
     .then((user) => {
-      console.info("session created:", user);
       const token = generateAccessToken(email);
       res.status(201).json({ user, token });
     })

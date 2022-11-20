@@ -1,21 +1,19 @@
+// third party libs
 import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-import useToken from "../../common/useToken";
-import { store } from "../../common/store";
-import { alignCenter, alignRight } from "../../common/styling";
-import { formatCurrency } from "../../common/formatting";
-import { isError, handleError } from "../../common/errorHandling";
-
-import { getAccounts } from "./functions/getAccounts";
-
 import "milligram";
 
-import { Breadcrumb, BreadcrumbItem } from "../../common/breadcrumbs";
+// common logic & functions
+import useToken from "../../common/useToken";
+import { store } from "../../common/store";
+import { isError, handleError } from "../../common/errorHandling";
+import { Submenu, SubmenuItem } from "../../common/submenu";
+import { formatCurrency } from "../../common/formatting";
+import { alignCenter, alignRight } from "../../common/styling";
+import { getAccounts } from "./functions/getAccounts";
 
 const Accounts = () => {
   const [accounts, setAccounts] = useState([]);
-
   const navigate = useNavigate();
 
   const { token } = useToken();
@@ -43,9 +41,6 @@ const Accounts = () => {
           .then((response) => {
             const { bankingAccounts } = response;
             if (mounted) {
-              // TODO: This is a dangerous approach.
-              // What happens to the balance calculation when we add paginated result?
-              // Revisit.
               setAccounts(bankingAccounts);
             }
             if (isError(response)) {
@@ -71,9 +66,9 @@ const Accounts = () => {
           Here are your accounts{" "}
           <span className="highlight">{firstName.current}</span>.
         </h1>
-        <Breadcrumb>
-          <BreadcrumbItem to="/new-account">New Account</BreadcrumbItem>
-        </Breadcrumb>
+        <Submenu>
+          <SubmenuItem to="/new-account">Create a new bank account</SubmenuItem>
+        </Submenu>
         <table>
           <thead>
             <tr>

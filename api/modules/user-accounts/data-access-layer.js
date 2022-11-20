@@ -1,8 +1,8 @@
-// User Accounts Data Access Layer
+// User Accounts
+// Data Access Layer
+const { firebase, db, collectionNames } = require("../../common/datasources");
 
-const { firebase, db, collectionNames } = require("../datasources");
-
-// methods
+// create method
 
 const create = (data) => {
   const { email, password, firstName, lastName, phoneNumber } = data;
@@ -31,6 +31,8 @@ const create = (data) => {
   });
 };
 
+// getOne method
+
 const getOne = (data) => {
   const { userAccountId } = data;
   return new Promise((resolve, reject) => {
@@ -52,6 +54,8 @@ const getOne = (data) => {
       });
   });
 };
+
+// update method
 
 const update = (data) => {
   const { userAccountId, firstName, lastName, phoneNumber } = data;
@@ -91,4 +95,9 @@ const discard = (data) => {
   });
 };
 
-module.exports = { create, getOne, update, discard };
+module.exports = {
+  create,
+  getOne,
+  update,
+  discard,
+};

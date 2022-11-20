@@ -1,6 +1,8 @@
-// User Sessions Data Access Layer
+// User Sessions
+// Data Access Layer
+const { firebase, db, collectionNames } = require("../../common/datasources");
 
-const { firebase, db, collectionNames } = require("../datasources");
+// create method
 
 const create = (data) => {
   const { email, password } = data;
@@ -30,6 +32,8 @@ const create = (data) => {
       });
   });
 };
+
+// discard method
 
 const discard = () => {
   return new Promise((resolve, reject) => {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-// TODO: localStorage is less secure. Refactor.
+// TODO: localStorage is less secure. Refactor. Maybe use http cookies?
 
 export default function useToken() {
   const tokenKey = "capstone-bank-token";

@@ -1,4 +1,4 @@
-// FIREBASE
+// Firebase configuration
 const firebase = require("firebase");
 
 firebase.initializeApp({
@@ -10,8 +10,10 @@ firebase.initializeApp({
   storageBucket: process.env.FIREBASE_STORAGEBUCKET,
 });
 
+// share the firestone database so we can manipulate the data
 const db = firebase.firestore();
 
+// Centralize the collection names
 const collectionNames = {
   userAccounts: "UserAccounts",
   bankingAccounts: "BankingAccounts",

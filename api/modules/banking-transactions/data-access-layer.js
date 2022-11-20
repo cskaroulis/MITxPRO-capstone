@@ -1,8 +1,8 @@
-// Banking Transactions Data Access Layer
+// Banking Transactions
+// Data Access Layer
+const { db, collectionNames } = require("../../common/datasources");
 
-const { db, collectionNames } = require("../datasources");
-
-// methods
+// create method
 
 const create = async (data) => {
   const { userAccountId, bankingAccountId, type, amount, created } = data;
@@ -29,6 +29,8 @@ const create = async (data) => {
   });
 };
 
+// getOne method
+
 const getOne = (data) => {
   const { transactionId } = data;
   return new Promise((resolve, reject) => {
@@ -50,6 +52,8 @@ const getOne = (data) => {
       });
   });
 };
+
+// getAll method
 
 const getAll = (data) => {
   const { bankingAccountId } = data;
@@ -85,6 +89,11 @@ const getAll = (data) => {
   });
 };
 
+// calculateBankingAccountBalance method
+// Given an account banking id
+// this method loops through the account's transactions
+// and calculates the account total.
+// This ensures we always get an accurate balance.
 const calculateBankingAccountBalance = (bankingAccountId) => {
   return new Promise((resolve, reject) => {
     db.collection(collectionNames.bankingTransactions)
@@ -105,4 +114,9 @@ const calculateBankingAccountBalance = (bankingAccountId) => {
   });
 };
 
-module.exports = { create, getOne, getAll, calculateBankingAccountBalance };
+module.exports = {
+  create,
+  getOne,
+  getAll,
+  calculateBankingAccountBalance,
+};

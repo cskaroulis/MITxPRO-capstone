@@ -1,15 +1,15 @@
-// Banking Account Data Access Layer
-const { db, collectionNames } = require("../datasources");
+// Banking Account
+// Data Access Layer
+const { db, collectionNames } = require("../../common/datasources");
 const {
   calculateBankingAccountBalance,
 } = require("../banking-transactions/data-access-layer");
 
-// methods
+// create method
 
 const create = (data) => {
   const { userAccountId, nickname, type, created } = data;
   const result = data;
-  console.info(data);
   return new Promise((resolve, reject) => {
     db.collection(collectionNames.bankingAccounts)
       .add({ userAccountId, nickname, type, created })
@@ -22,6 +22,8 @@ const create = (data) => {
       });
   });
 };
+
+// getOne method
 
 const getOne = (data) => {
   const { bankingAccountId } = data;
@@ -44,6 +46,8 @@ const getOne = (data) => {
       });
   });
 };
+
+// getAll method
 
 const getAll = (data) => {
   const { userAccountId } = data;
@@ -80,6 +84,8 @@ const getAll = (data) => {
   });
 };
 
+// update method
+
 const update = (data) => {
   const { bankingAccountId, nickname } = data;
   return new Promise((resolve, reject) => {
@@ -96,6 +102,8 @@ const update = (data) => {
       });
   });
 };
+
+// discard method
 
 const discard = (data) => {
   const { bankingAccountId } = data;

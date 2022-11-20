@@ -1,8 +1,9 @@
+// third party libs
 import { Link } from "react-router-dom";
-
-import { store } from "../../common/store";
-
 import "milligram";
+
+// common logic & functions
+import { store } from "../../common/store";
 
 const Header = () => {
   const firstName = store.get("firstName");

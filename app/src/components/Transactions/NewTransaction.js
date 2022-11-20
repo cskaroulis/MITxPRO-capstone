@@ -1,15 +1,16 @@
+// third party libs
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { NotificationManager } from "react-notifications";
+import "milligram";
 
+// common logic & functions
 import useToken from "../../common/useToken";
 import { store } from "../../common/store";
-import { createNewTransaction } from "./functions/createNewTransaction";
-import { Breadcrumb, BreadcrumbItem } from "../../common/breadcrumbs";
 import { isError, handleError } from "../../common/errorHandling";
+import { Submenu, SubmenuItem } from "../../common/submenu";
 import { safeTrim } from "../../common/formatting";
-
-import "milligram";
+import { createNewTransaction } from "./functions/createNewTransaction";
 
 function NewTransaction() {
   const [amount, setAmount] = useState();
@@ -48,7 +49,8 @@ function NewTransaction() {
 
       if (isError(response)) {
         dealWithIt(response);
-        if (response.errorMessage === "Insufficient funds.") {
+        // stay in the form only when we got an insufficieant funds notice
+        if (response.errorMessage !== "Insufficient funds.") {
           navigate("/transactions");
         }
       } else {
@@ -69,9 +71,9 @@ function NewTransaction() {
   return (
     <section className="container" id="new-transaction">
       <h1>{type === "withdrawal" ? "Withdrawal" : "Deposit"}</h1>
-      <Breadcrumb>
-        <BreadcrumbItem to="/transactions">Return Home</BreadcrumbItem>
-      </Breadcrumb>
+      <Submenu>
+        <SubmenuItem to="/transactions">Return to transactions</SubmenuItem>
+      </Submenu>
       <form onSubmit={handleSubmit}>
         <label>
           <p>Amount</p>

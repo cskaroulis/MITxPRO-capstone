@@ -1,3 +1,4 @@
+// third party libs
 import {
   BrowserRouter as Router,
   Routes,
@@ -5,28 +6,28 @@ import {
   Navigate,
   Outlet,
 } from "react-router-dom";
-
-// React Notification
-import "react-notifications/lib/notifications.css";
 import { NotificationContainer } from "react-notifications";
-// Types: info, success, warning, error
-// Usage:
-// NotificationManager.success(message, title, timeOutMs, callback, priority);
 
+// css
+import "milligram";
+import "react-notifications/lib/notifications.css";
+import "./App.css";
+
+// common logic & functions
 import useToken from "../../common/useToken";
 
-import Header from "../Header/Header";
+// components
 import Accounts from "../Accounts/Accounts";
+import Header from "../Header/Header";
 import NewAccount from "../Accounts/NewAccount";
+import NewTransaction from "../Transactions/NewTransaction";
 import Login from "../Login/Login";
 import Logout from "../Logout/Logout";
 import Signup from "../Signup/Signup";
 import Transactions from "../Transactions/Transactions";
-import NewTransaction from "../Transactions/NewTransaction";
 
-import "milligram";
-import "./App.css";
-
+// The PrivateRoutes componet allows us
+// to create groups of "protected" routes
 const PrivateRoutes = () => {
   const { token } = useToken();
   return token ? <Outlet /> : <Navigate to="/login" />;

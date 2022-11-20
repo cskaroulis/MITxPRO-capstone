@@ -1,19 +1,19 @@
+// third party libs
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
 import { NotificationManager } from "react-notifications";
+import "milligram";
 
+// common logic & functions
 import { store } from "../../common/store";
-import { loginUser } from "./functions/loginUser";
 import { isError, handleError } from "../../common/errorHandling";
 import { safeTrim } from "../../common/formatting";
-
-import "milligram";
+import { loginUser } from "./functions/loginUser";
 
 const Login = ({ setToken }) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-
   const navigate = useNavigate();
 
   const dealWithIt = (error) => {
@@ -36,7 +36,7 @@ const Login = ({ setToken }) => {
         NotificationManager.success("Welcome back!", null, 2000);
 
         if (!!response?.token) {
-          store.clear(); // ok. Do not clear AFTER you set the token.
+          store.clear(); // ok. This belongs here. Do not clear AFTER you set the token.
           setToken(response?.token);
         }
 
@@ -69,7 +69,6 @@ const Login = ({ setToken }) => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
-        <p>[ fermentum@yahoo.couk MKV41UWB9NJ ]</p>
         <div>
           <button type="submit">Submit</button>
         </div>
@@ -80,7 +79,7 @@ const Login = ({ setToken }) => {
           pathname: "/signup",
         }}
       >
-        Create a new account
+        Sign up!
       </Link>
     </section>
   );

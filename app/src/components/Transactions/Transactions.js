@@ -1,15 +1,16 @@
+// third party libs
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import "milligram";
 
-import { Breadcrumb, BreadcrumbItem } from "../../common/breadcrumbs";
+// common logic & functions
 import useToken from "../../common/useToken";
 import { store } from "../../common/store";
-import { alignCenter, alignRight } from "../../common/styling";
-import { formatCurrency, formatDate } from "../../common/formatting";
 import { isError, handleError } from "../../common/errorHandling";
+import { Submenu, SubmenuItem } from "../../common/submenu";
+import { formatCurrency, formatDate } from "../../common/formatting";
+import { alignCenter, alignRight } from "../../common/styling";
 import { getTransactions } from "./functions/getTransactions";
-
-import "milligram";
 
 function Transactions() {
   const [totalBalance, setTotalBalance] = useState(0);
@@ -95,15 +96,15 @@ function Transactions() {
       <h1>
         <span className="highlight">{nickname.current}</span> transactions
       </h1>
-      <Breadcrumb>
-        <BreadcrumbItem to="/">Return Home</BreadcrumbItem>
-        <BreadcrumbItem to="/new-transaction" state={{ type: "deposit" }}>
+      <Submenu>
+        <SubmenuItem to="/">Return to accounts</SubmenuItem>
+        <SubmenuItem to="/new-transaction" state={{ type: "deposit" }}>
           Make a deposit
-        </BreadcrumbItem>
-        <BreadcrumbItem to="/new-transaction" state={{ type: "withdrawal" }}>
+        </SubmenuItem>
+        <SubmenuItem to="/new-transaction" state={{ type: "withdrawal" }}>
           Make a withdrawal
-        </BreadcrumbItem>
-      </Breadcrumb>
+        </SubmenuItem>
+      </Submenu>
       <div className="balance-container">
         Current balance: &nbsp;
         <span className="balance-amount">{formatCurrency(totalBalance)}</span>

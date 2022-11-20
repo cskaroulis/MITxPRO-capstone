@@ -1,12 +1,13 @@
+// third party libs
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NotificationManager } from "react-notifications";
-
 import "milligram";
 
-import { signupUser } from "./functions/signupUser";
+// common logic & functions
 import { isError, handleError } from "../../common/errorHandling";
 import { safeTrim } from "../../common/formatting";
+import { signupUser } from "./functions/signupUser";
 
 const Signup = () => {
   const [email, setEmail] = useState();
@@ -14,13 +15,13 @@ const Signup = () => {
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
   const [phoneNumber, setPhoneNumber] = useState();
-
-  // const contextMgr = useContext(AppContext);
   const navigate = useNavigate();
 
   const dealWithIt = (error) => {
     handleError("Failed to signup:", error);
   };
+
+  // handlers
 
   const handleSubmit = async (e) => {
     e.preventDefault();

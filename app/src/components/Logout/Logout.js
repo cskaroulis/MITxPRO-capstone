@@ -1,11 +1,13 @@
+// third party libs
 import { useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
+// common logic & functions
 import useToken from "../../common/useToken";
 import { store } from "../../common/store";
-import { logoutUser } from "./functions/logoutUser";
 import { handleError } from "../../common/errorHandling";
+import { logoutUser } from "./functions/logoutUser";
 
 const Logout = ({ removeToken }) => {
   const { token } = useToken();
